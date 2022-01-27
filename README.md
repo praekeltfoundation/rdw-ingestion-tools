@@ -1,3 +1,11 @@
+
+<div align="right">
+  <p>
+    <img src="https://github.com/praekeltfoundation/rdw-ingestion-tools/workflows/black-lint/badge.svg" width="120" />
+    <img src="https://github.com/praekeltfoundation/rdw-ingestion-tools/workflows/isort-lint/badge.svg" width="120" />
+  </p>
+</div>
+  
 # rdw-ingestion-tools
 
 A DS team repository for shared data ingestion utilities. 
