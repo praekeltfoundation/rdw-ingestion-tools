@@ -2,7 +2,7 @@
 
 A DS team repository for shared data ingestion utilities. 
 
-## Usage
+## usage
 
 To interact with an API.
 
