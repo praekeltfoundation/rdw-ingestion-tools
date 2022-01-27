@@ -13,10 +13,14 @@ class APIKeyMissingError(Exception):
 try:
     API_KEY = os.environ["TURN_API_KEY"]
 except KeyError:
-    raise APIKeyMissingError("Unable to locate API_KEY in the global environment.")
+    raise APIKeyMissingError(
+        "Unable to locate API_KEY in the global environment."
+    )
 
 if not API_KEY:
-    raise APIKeyMissingError("Unable to locate API_KEY in the global environment.")
+    raise APIKeyMissingError(
+        "Unable to locate API_KEY in the global environment."
+    )
 
 
 class Session(Session):

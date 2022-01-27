@@ -3,9 +3,7 @@ from urllib.parse import urljoin
 
 from requests import Session
 
-BASE_URL = (
-    "https://flow-results-prd.covid19-k8s.prd-p6t.org/api/v1/flow-results/packages/"
-)
+BASE_URL = "https://flow-results-prd.covid19-k8s.prd-p6t.org/api/v1/flow-results/packages/"
 
 
 class APIKeyMissingError(Exception):
@@ -15,10 +13,14 @@ class APIKeyMissingError(Exception):
 try:
     API_KEY = os.environ["FLOW_RESULTS_API_KEY"]
 except KeyError:
-    raise APIKeyMissingError("Unable to locate API_KEY in the global environment.")
+    raise APIKeyMissingError(
+        "Unable to locate API_KEY in the global environment."
+    )
 
 if not API_KEY:
-    raise APIKeyMissingError("Unable to locate API_KEY in the global environment.")
+    raise APIKeyMissingError(
+        "Unable to locate API_KEY in the global environment."
+    )
 
 
 class Session(Session):

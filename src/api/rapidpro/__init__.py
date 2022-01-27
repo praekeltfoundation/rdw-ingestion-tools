@@ -13,10 +13,14 @@ class APIKeyMissingError(Exception):
 try:
     API_KEY = os.environ["RAPIDPRO_API_KEY"]
 except KeyError:
-    raise APIKeyMissingError("Unable to locate API_KEY in the global environment.")
+    raise APIKeyMissingError(
+        "Unable to locate API_KEY in the global environment."
+    )
 
 if not API_KEY:
-    raise APIKeyMissingError("Unable to locate API_KEY in the global environment.")
+    raise APIKeyMissingError(
+        "Unable to locate API_KEY in the global environment."
+    )
 
 
 class Session(Session):
@@ -39,7 +43,9 @@ class Session(Session):
             except KeyError:
                 next = False
             while next:
-                response = self.request(method="GET", url=next.split("/v2/")[1])
+                response = self.request(
+                    method="GET", url=next.split("/v2/")[1]
+                )
                 if response.ok:
                     r = response.json()
                     l.append(r["results"])
@@ -49,7 +55,9 @@ class Session(Session):
                     except KeyError:
                         next = False
                 else:
-                    raise Exception("Pagination response was not ok for request:", next)
+                    raise Exception(
+                        "Pagination response was not ok for request:", next
+                    )
         return l
 
 

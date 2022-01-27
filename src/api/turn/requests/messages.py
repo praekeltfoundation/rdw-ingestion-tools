@@ -41,7 +41,9 @@ class Messages:
         for obj in l:
             if "_vnd" not in obj.keys():
                 contacts.append(pd.json_normalize(obj["contacts"], sep="_"))
-                inbound_messages.append(pd.json_normalize(obj["messages"], sep="_"))
+                inbound_messages.append(
+                    pd.json_normalize(obj["messages"], sep="_")
+                )
             elif "_vnd" in obj.keys():
                 outbound_messages.append(pd.json_normalize(obj, sep="_"))
 

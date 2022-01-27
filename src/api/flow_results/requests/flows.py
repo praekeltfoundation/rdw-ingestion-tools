@@ -51,10 +51,18 @@ class Flows:
             f_data["modified"].append(flow["data"]["attributes"]["modified"])
             f_data["title"].append(flow["data"]["attributes"]["title"])
             f_data["language"].append(
-                flow["data"]["attributes"]["resources"][0]["schema"]["language"]
+                flow["data"]["attributes"]["resources"][0]["schema"][
+                    "language"
+                ]
             )
 
-        q_data = {"flow_id": [], "id": [], "type": [], "label": [], "type_options": []}
+        q_data = {
+            "flow_id": [],
+            "id": [],
+            "type": [],
+            "label": [],
+            "type_options": [],
+        }
 
         questions = [
             flow["data"]["attributes"]["resources"][0]["schema"]["questions"]
