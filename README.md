@@ -1,5 +1,5 @@
 
-<div align="right">
+<div align="center">
   <p>
     <img src="https://github.com/praekeltfoundation/rdw-ingestion-tools/workflows/black-lint/badge.svg" width="120" />
     <img src="https://github.com/praekeltfoundation/rdw-ingestion-tools/workflows/isort-lint/badge.svg" width="120" />
