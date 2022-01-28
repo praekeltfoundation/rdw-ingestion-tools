@@ -10,16 +10,21 @@ class APIKeyMissingError(Exception):
     pass
 
 
+class URLConfigMissingError(Exception):
+    pass
+
+
 try:
     API_KEY = os.environ["TURN_API_KEY"]
+    BASE_URL = os.environ["TURN_API_BASE_URL"]
 except KeyError:
     raise APIKeyMissingError(
-        "Unable to locate API_KEY in the global environment."
+        "Unable to locate TURN_API_KEY or TURN_API_BASE_URL in the global environment."
     )
 
-if not API_KEY:
+if not API_KEY or not BASE_URL:
     raise APIKeyMissingError(
-        "Unable to locate API_KEY in the global environment."
+        "Unable to locate TURN_API_KEY or TURN_API_BASE_URL in the global environment."
     )
 
 
