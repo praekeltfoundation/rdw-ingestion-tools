@@ -1,3 +1,6 @@
+<h1 align="center">
+  :octocat: rdw-ingestion-tools
+</h1>
 
 <div align="center">
   <p>
@@ -5,8 +8,6 @@
     <img src="https://github.com/praekeltfoundation/rdw-ingestion-tools/workflows/isort-lint/badge.svg" width="120" />
   </p>
 </div>
-  
-# rdw-ingestion-tools
 
 A DS team repository for shared data ingestion utilities. 
 
@@ -15,9 +16,9 @@ A DS team repository for shared data ingestion utilities.
 To interact with an API.
 
 ```
-from api import API
+from api.flow_results import pyFlows
 
-API.pyFlows.flows.get_ids()
+pyFlows.flows.get_ids()
 ```
 
 To access some of the s3 utilities used in ingestion. 
