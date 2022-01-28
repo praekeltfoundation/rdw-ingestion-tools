@@ -1,5 +1,5 @@
 ---
-name: isort-lint
+name: lint
 
 on: [push, pull_request]
 
