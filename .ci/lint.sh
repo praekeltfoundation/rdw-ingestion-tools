@@ -12,13 +12,23 @@ lint() {
     return $failed
 }
 
-lint .
+fmt() {
+    isort "$@" && black -l79 "$@"
+}
+
+lint src tests
 result=$?
 
 if [ $result = 0 ]; then
     echo -e "${ANSI_GREEN}Lint passed!${ANSI_RESET}"
 else
     echo -e "${ANSI_RED}Lint failed!${ANSI_RESET}"
+    echo -e "\nWould you like to format the codebase? (Y/N)"
+    read user_prompt
+    if [ $user_prompt = Y ]; then
+        echo -e "\nReformatting..."
+        fmt src tests
+    fi
 fi
 
 exit $result
