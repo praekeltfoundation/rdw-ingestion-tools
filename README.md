@@ -5,7 +5,7 @@
 <div align="center">
   <p>
     <img src="https://github.com/praekeltfoundation/rdw-ingestion-tools/workflows/lint/badge.svg" width="120" />
-    <img src="https://github.com/praekeltfoundation/rdw-ingestion-tools/workflows/release/badge.svg" width="120" />
+    <img src="https://github.com/praekeltfoundation/rdw-ingestion-tools/workflows/release/badge.svg" width="150" />
   </p>
 </div>
 
