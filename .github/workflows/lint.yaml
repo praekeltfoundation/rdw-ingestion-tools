@@ -1,5 +1,5 @@
 ---
-name: isort-lint
+name: lint
 
 on: [push, pull_request]
 
@@ -12,3 +12,10 @@ jobs:
         with:
           python-version: 3.8
       - uses: jamescurtin/isort-action@master
+  black-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: psf/black@stable
+        with:
+          options: "-l79"
