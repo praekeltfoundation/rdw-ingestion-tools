@@ -3,8 +3,6 @@ from urllib.parse import urljoin
 
 from requests import Session
 
-BASE_URL = "https://flow-results-prd.covid19-k8s.prd-p6t.org/api/v1/flow-results/packages/"
-
 
 class APIKeyMissingError(Exception):
     pass

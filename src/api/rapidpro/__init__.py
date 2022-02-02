@@ -3,8 +3,6 @@ from urllib.parse import urljoin
 
 from requests import Session
 
-BASE_URL = "https://rapidpro.prd.momconnect.co.za/api/v2/"
-
 
 class APIKeyMissingError(Exception):
     pass

@@ -3,8 +3,6 @@ from urllib.parse import urljoin
 
 from requests import Session
 
-BASE_URL = "https://whatsapp.praekelt.org/v1/data/"
-
 
 class APIKeyMissingError(Exception):
     pass
