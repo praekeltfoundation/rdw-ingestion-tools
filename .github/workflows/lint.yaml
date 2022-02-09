@@ -19,3 +19,7 @@ jobs:
       - uses: psf/black@stable
         with:
           options: "-l79"
+  yamllint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: karancode/yamllint-github-action@master
