@@ -8,6 +8,10 @@ class PageViews:
         self._session = session
 
     def get_pageviews(self, ts):
+        """
+        API only accepts initial timestamp and returns records after.
+
+        """
 
         url = "pageviews/?timestamp_gt=" + ts
 
