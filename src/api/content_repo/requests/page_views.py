@@ -8,10 +8,6 @@ class PageViews:
         self._session = session
 
     def get_pageviews(self, ts):
-        """
-        Returns all pageviews after ts.
-
-        """
 
         url = "pageviews/?timestamp_gt=" + ts
 
