@@ -51,6 +51,9 @@ class S3:
     def read(self, path):
         return wr.s3.read_parquet(path, boto3_session=self._session)
 
+    def read_csv(self, path):
+        return wr.s3.read_csv(path, boto3_session=self._session)
+
     def write(self, df, path, dataset=True, dtype=None, mode=None):
         wr.s3.to_parquet(
             df=df,
