@@ -1,5 +1,3 @@
-import json
-
 import pandas as pd
 
 
@@ -20,7 +18,7 @@ class PageViews:
             r.raise_for_status()
             r = r.json()
             next_page = r["next"]
-            l = [r]
+            response_list = [r]
         else:
             next_page = page
 
@@ -29,13 +27,13 @@ class PageViews:
             r = self._session.request("GET", next_page).json()
             next_page = r["next"]
             try:
-                l.append(r)
+                response_list.append(r)
             except NameError:
-                l = [r]
+                response_list = [r]
             pages += 1
 
         pageviews = []
-        for response in l:
+        for response in response_list:
             pageviews.append(pd.json_normalize(response["results"], sep="_"))
         pageviews = pd.concat(pageviews)
 

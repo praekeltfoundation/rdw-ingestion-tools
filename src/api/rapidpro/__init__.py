@@ -37,10 +37,10 @@ class Session(Session):
 
     def get(self, url, **kwargs):
         response = self.request(method="GET", url=url, **kwargs)
-        l = []
+        response_list = []
         if response.ok:
             r = response.json()
-            l.append(r["results"])
+            response_list.append(r["results"])
             try:
                 next = r["next"]
             except KeyError:
@@ -51,7 +51,7 @@ class Session(Session):
                 )
                 if response.ok:
                     r = response.json()
-                    l.append(r["results"])
+                    response_list.append(r["results"])
                     try:
                         print(r["next"])
                         next = r["next"]
@@ -61,7 +61,7 @@ class Session(Session):
                     raise Exception(
                         "Pagination response was not ok for request:", next
                     )
-        return l
+        return response_list
 
 
 session = Session(url_base=BASE_URL)

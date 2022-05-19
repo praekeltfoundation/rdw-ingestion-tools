@@ -1,8 +1,5 @@
-import json
 import time
 from urllib.parse import urlencode
-
-from requests.sessions import session
 
 
 class Responses:
@@ -11,8 +8,8 @@ class Responses:
 
     @staticmethod
     def _parse_response_pagination_link(link):
-        l = link.split("packages/")[-1]
-        return l
+        link_split = link.split("packages/")[-1]
+        return link_split
 
     def get_ids(self, **kwargs):
 

@@ -1,7 +1,4 @@
-import json
-
 import pandas as pd
-from pandas.core.reshape.concat import concat
 
 
 def deep_get(obj, path):
@@ -25,7 +22,7 @@ class Messages:
         cursor_request.raise_for_status()
         cursor = cursor_request.json()["cursor"]
 
-        l = []
+        response_list = []
         i = 0
         while cursor:
             i += 1
@@ -33,12 +30,12 @@ class Messages:
             response = self._session.request("GET", url + f"/{cursor}")
             response.raise_for_status()
             for row in response.json()["data"]:
-                l.append(row)
+                response_list.append(row)
 
             cursor = deep_get(response.json(), ["paging", "next"])
 
         contacts, inbound_messages, outbound_messages = [], [], []
-        for obj in l:
+        for obj in response_list:
             if "_vnd" not in obj.keys():
                 contacts.append(pd.json_normalize(obj["contacts"], sep="_"))
                 inbound_messages.append(
