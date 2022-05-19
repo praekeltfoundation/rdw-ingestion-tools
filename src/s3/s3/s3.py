@@ -1,12 +1,4 @@
-from datetime import datetime
-
 import awswrangler as wr
-from boto3 import session
-
-
-def unique(l):
-    u = list(set(l))
-    return u
 
 
 class S3:
@@ -28,7 +20,7 @@ class S3:
         return pages
 
     def get_last_modified(self, bucket, prefix):
-        times, indx, latest = [], [], []
+        times = []
 
         pages = self.get_paginator(bucket=bucket, prefix=prefix)
 
