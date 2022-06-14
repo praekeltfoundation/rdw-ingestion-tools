@@ -12,10 +12,10 @@ class Runs:
 
         responses = self._session.get(request, params=params)
 
-        r_n = [pd.json_normalize(response, sep="_") for response in responses]
+        df = [pd.json_normalize(response, sep="_") for response in responses]
 
         del responses
 
-        df = pd.concat(r_n)
+        df = pd.concat(df)
 
         return df
