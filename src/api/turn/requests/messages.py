@@ -13,7 +13,7 @@ class Messages:
 
     def get_messages(self, start, end):
 
-        url = "messages/cursor"
+        url = "data/messages/cursor"
 
         data = {"from": start, "until": end}
 

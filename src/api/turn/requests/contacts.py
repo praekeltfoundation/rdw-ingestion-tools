@@ -13,7 +13,7 @@ class Contacts:
 
     def get_contacts(self, start, end):
 
-        url = "contacts/cursor"
+        url = "data/contacts/cursor"
 
         data = {"from": start, "until": end}
 
