@@ -13,27 +13,27 @@ class MQR:
 
         url = "mqrbaselinesurvey/?updated_at_gt=" + ts
 
-        r = self._session.request("GET", url)
+        response = self._session.request("GET", url)
 
-        r.raise_for_status()
-        r = r.json()
+        response.raise_for_status()
+        response = response.json()
 
-        next_page = r["next"]
-        response_list = [r]
+        next_page = response["next"]
+        response_list = [response]
 
         pages = 0
         while next_page and pages < max_pages:
-            r = self._session.request("GET", next_page).json()
-            next_page = r["next"]
+            response = self._session.request("GET", next_page).json()
+            next_page = response["next"]
             try:
-                response_list.append(r)
+                response_list.append(response)
             except NameError:
-                response_list = [r]
+                response_list = [response]
             pages += 1
 
         baseline = []
-        for response in response_list:
-            baseline.append(pd.json_normalize(response["results"], sep="_"))
+        for item in response_list:
+            baseline.append(pd.json_normalize(item["results"], sep="_"))
         baseline = pd.concat(baseline)
 
         return baseline

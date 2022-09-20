@@ -37,6 +37,7 @@ class Session(Session):
 
     def get(self, url, **kwargs):
         response = self.request(method="GET", url=url, **kwargs)
+        response.raise_for_status()
         response_list = []
         if response.ok:
             r = response.json()

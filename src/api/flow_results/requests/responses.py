@@ -16,7 +16,9 @@ class Responses:
         params = {**kwargs}
 
         request = ""
+
         response = self._session.get(request, params=params)
+        response.raise_for_status()
 
         ids = [flow["id"] for flow in response.json()["data"]]
 
