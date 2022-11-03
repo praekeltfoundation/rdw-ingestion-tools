@@ -1,17 +1,17 @@
 import pandas as pd
 
 
-class PageViews:
+class Pages:
     def __init__(self, session):
         self._session = session
 
-    def get_pageviews(self, ts, max_pages=5, page=None):
+    def get_pages(self, page=None):
         """
-        API only accepts initial timestamp and returns records after.
+        Returns content pages.
 
         """
 
-        url = "custom/pageviews/?timestamp_gt=" + ts
+        url = "pages"
 
         if not page:
             response = self._session.request("GET", url)
@@ -22,24 +22,18 @@ class PageViews:
         else:
             next_page = page
 
-        pages = 0
-        while next_page and pages < max_pages:
+        while next_page:
+            print("Retrieving pages for page: ", next_page)
             response = self._session.request("GET", next_page).json()
             next_page = response["next"]
             try:
                 response_list.append(response)
             except NameError:
                 response_list = [response]
-            pages += 1
 
-        pageviews = []
+        pages = []
         for item in response_list:
-            pageviews.append(pd.json_normalize(item["results"], sep="_"))
-        pageviews = pd.concat(pageviews)
+            pages.append(pd.json_normalize(item["results"], sep="_"))
+        pages = pd.concat(pages)
 
-        if response["next"]:
-            page = response["next"]
-        else:
-            page = None
-
-        return {"pageviews": pageviews, "page": page}
+        return {"pageviews": pages}
