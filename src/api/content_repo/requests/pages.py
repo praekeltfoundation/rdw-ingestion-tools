@@ -36,4 +36,4 @@ class Pages:
             pages.append(pd.json_normalize(item["results"], sep="_"))
         pages = pd.concat(pages)
 
-        return {"pageviews": pages}
+        return {"pages": pages}
