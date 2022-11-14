@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="rdw-ingestion-tools",
-    version="0.2.3",
+    version="0.2.4",
     license="MIT",
     description="Utilities for data ingestion.",
     author="Praekelt.org DS Team",
