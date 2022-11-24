@@ -2,12 +2,10 @@ class Inbounds:
     def __init__(self, session):
         self._session = session
 
-    def get_inbounds(self, start, end):
+    def get_inbounds(self, **kwargs):
 
         url = "inbounds"
 
-        data = {"start_datetime": start, "end_datetime": end}
+        response_list = self._session.get(url, **kwargs)
 
-        cursor_request = self._session.request("GET", url, params=data)
-
-        return cursor_request
+        return response_list
