@@ -1,4 +1,4 @@
-import pandas as pd
+from pandas import json_normalize
 
 
 def deep_get(obj, path):
@@ -18,6 +18,6 @@ class Content:
         response = self._session.request("GET", url)
         response.raise_for_status()
 
-        content = pd.json_normalize(response.json()["data"])
+        content = json_normalize(response.json()["data"])
 
         return content

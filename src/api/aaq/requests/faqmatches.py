@@ -1,4 +1,4 @@
-import pandas as pd
+from pandas import DataFrame, concat
 
 
 class FAQMatches:
@@ -15,8 +15,6 @@ class FAQMatches:
             {key: str(d[key]) for key in d.keys()} for d in response_list
         ]
 
-        faqmatches = pd.concat(
-            [pd.DataFrame(d, index=[0]) for d in response_list]
-        )
+        faqmatches = concat([DataFrame(d, index=[0]) for d in response_list])
 
         return faqmatches

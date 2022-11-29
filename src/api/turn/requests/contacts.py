@@ -1,4 +1,4 @@
-import pandas as pd
+from pandas import concat, json_normalize
 
 
 def deep_get(obj, path):
@@ -34,8 +34,8 @@ class Contacts:
 
             cursor = deep_get(response.json(), ["paging", "next"])
 
-        contacts = pd.concat(
-            [pd.json_normalize(obj, sep="_") for obj in response_list]
+        contacts = concat(
+            [json_normalize(obj, sep="_") for obj in response_list]
         )
 
         return contacts

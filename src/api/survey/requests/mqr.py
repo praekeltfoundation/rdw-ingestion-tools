@@ -1,4 +1,4 @@
-import pandas as pd
+from pandas import concat, json_normalize
 
 
 class MQR:
@@ -33,7 +33,7 @@ class MQR:
 
         baseline = []
         for item in response_list:
-            baseline.append(pd.json_normalize(item["results"], sep="_"))
-        baseline = pd.concat(baseline)
+            baseline.append(json_normalize(item["results"], sep="_"))
+        baseline = concat(baseline)
 
         return baseline

@@ -1,4 +1,4 @@
-import pandas as pd
+from pandas import concat, json_normalize
 
 
 class PageViews:
@@ -34,8 +34,8 @@ class PageViews:
 
         pageviews = []
         for item in response_list:
-            pageviews.append(pd.json_normalize(item["results"], sep="_"))
-        pageviews = pd.concat(pageviews)
+            pageviews.append(json_normalize(item["results"], sep="_"))
+        pageviews = concat(pageviews)
 
         if response["next"]:
             page = response["next"]

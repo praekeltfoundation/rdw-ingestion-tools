@@ -1,4 +1,4 @@
-import pandas as pd
+from pandas import concat, json_normalize
 
 
 class Pages:
@@ -33,7 +33,7 @@ class Pages:
 
         pages = []
         for item in response_list:
-            pages.append(pd.json_normalize(item["results"], sep="_"))
-        pages = pd.concat(pages)
+            pages.append(json_normalize(item["results"], sep="_"))
+        pages = concat(pages)
 
         return {"pages": pages}
