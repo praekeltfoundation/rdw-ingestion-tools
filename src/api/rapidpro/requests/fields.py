@@ -1,4 +1,4 @@
-import pandas as pd
+from pandas import concat, json_normalize
 
 
 class Fields:
@@ -12,7 +12,7 @@ class Fields:
 
         responses = self._session.get(request, params=params)
 
-        r_n = [pd.json_normalize(response, sep="_") for response in responses]
-        df = pd.concat(r_n)
+        r_n = [json_normalize(response, sep="_") for response in responses]
+        df = concat(r_n)
 
         return df

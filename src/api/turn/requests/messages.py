@@ -1,4 +1,4 @@
-import pandas as pd
+from pandas import DataFrame, concat, json_normalize
 
 
 def deep_get(obj, path):
@@ -37,23 +37,23 @@ class Messages:
         contacts, inbound_messages, outbound_messages = [], [], []
         for obj in response_list:
             if "_vnd" not in obj.keys():
-                contacts.append(pd.json_normalize(obj["contacts"], sep="_"))
+                contacts.append(json_normalize(obj["contacts"], sep="_"))
                 inbound_messages.append(
-                    pd.json_normalize(obj["messages"], sep="_")
+                    json_normalize(obj["messages"], sep="_")
                 )
             elif "_vnd" in obj.keys():
-                outbound_messages.append(pd.json_normalize(obj, sep="_"))
+                outbound_messages.append(json_normalize(obj, sep="_"))
 
         try:
-            df_inbound = pd.concat(
-                [pd.concat(contacts), pd.concat(inbound_messages)], axis=1
+            df_inbound = concat(
+                [concat(contacts), concat(inbound_messages)], axis=1
             )
         except ValueError:
-            df_inbound = pd.DataFrame()
+            df_inbound = DataFrame()
 
         try:
-            df_outbound = pd.concat(outbound_messages)
+            df_outbound = concat(outbound_messages)
         except ValueError:
-            df_outbound = pd.DataFrame()
+            df_outbound = DataFrame()
 
         return {"inbound": df_inbound, "outbound": df_outbound}
