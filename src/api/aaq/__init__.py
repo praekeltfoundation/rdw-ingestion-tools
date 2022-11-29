@@ -62,6 +62,8 @@ class Session(Session):
             elif len(result) < params["limit"]:
                 break
 
+        response_list = sum(response_list, [])
+
         return response_list
 
 
