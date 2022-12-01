@@ -15,6 +15,12 @@ class Inbounds:
             {key: str(d[key]) for key in d.keys()} for d in response_list
         ]
 
-        inbounds = concat([DataFrame(d, index=[0]) for d in response_list])
+        try:
+            inbounds = concat([DataFrame(d, index=[0]) for d in response_list])
+        except ValueError as e:
+            if str(e) != "No objects to concatenate":
+                raise
+            else:
+                inbounds = DataFrame()
 
         return inbounds
