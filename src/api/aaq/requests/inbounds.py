@@ -37,10 +37,11 @@ class Inbounds:
 
         scores_list = []
         for response in response_list:
-            id = response["inbound_id"]
             scores = []
-            for faq in eval(response["model_scoring"]):
-                faqs = eval(response["model_scoring"])[faq]
+            id = response["inbound_id"]
+            model_scoring = eval(response["model_scoring"])
+            for faq in model_scoring:
+                faqs = model_scoring[faq]
                 if isinstance(faqs, str):
                     break
                 rank = ""
@@ -57,7 +58,7 @@ class Inbounds:
             scores_list.append(DataFrame(scores))
 
         try:
-            faq_ranks = concat([DataFrame(d, index=[0]) for d in scores_list])
+            faq_ranks = concat(scores_list)
         except ValueError as e:
             if str(e) != "No objects to concatenate":
                 raise
