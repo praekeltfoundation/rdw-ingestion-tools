@@ -24,3 +24,45 @@ class Inbounds:
                 inbounds = DataFrame()
 
         return inbounds
+
+    def get_faqranks(self, **kwargs):
+
+        url = "inbounds"
+
+        response_list = self._session.get(url, **kwargs)
+
+        response_list = [
+            {key: str(d[key]) for key in d.keys()} for d in response_list
+        ]
+
+        scores_list = []
+        for response in response_list:
+            scores = []
+            id = response["inbound_id"]
+            model_scoring = eval(response["model_scoring"])
+            for faq in model_scoring:
+                faqs = model_scoring[faq]
+                if isinstance(faqs, str):
+                    break
+                rank = ""
+                if "rank" in faqs.keys():
+                    rank = faqs["rank"]
+                scores.append(
+                    {
+                        "inbound_id": id,
+                        "faq_id": faq,
+                        "score": faqs["overall_score"],
+                        "rank": rank,
+                    }
+                )
+            scores_list.append(DataFrame(scores))
+
+        try:
+            faq_ranks = concat(scores_list)
+        except ValueError as e:
+            if str(e) != "No objects to concatenate":
+                raise
+            else:
+                faq_ranks = DataFrame()
+
+        return faq_ranks
