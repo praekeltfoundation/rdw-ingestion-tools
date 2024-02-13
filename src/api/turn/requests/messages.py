@@ -12,7 +12,6 @@ class Messages:
         self._session = session
 
     def get_messages(self, start, end):
-
         url = "data/messages/cursor"
 
         data = {"from": start, "until": end}

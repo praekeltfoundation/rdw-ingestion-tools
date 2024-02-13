@@ -6,7 +6,6 @@ class FlowStarts:
         self._session = session
 
     def get_flowstarts(self, **kwargs):
-
         params = {**kwargs}
         request = "flow_starts.json"
 

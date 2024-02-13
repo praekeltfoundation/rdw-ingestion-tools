@@ -6,7 +6,6 @@ class Inbounds:
         self._session = session
 
     def get_inbounds(self, **kwargs):
-
         url = "inbounds"
 
         response_list = self._session.get(url, **kwargs)
@@ -26,7 +25,6 @@ class Inbounds:
         return inbounds
 
     def get_faqranks(self, **kwargs):
-
         url = "inbounds"
 
         response_list = self._session.get(url, **kwargs)

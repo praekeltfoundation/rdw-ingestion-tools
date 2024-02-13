@@ -12,7 +12,6 @@ class Content:
         self._session = session
 
     def get_content(self, start, end):
-
         url = "export"
 
         response = self._session.request("GET", url)

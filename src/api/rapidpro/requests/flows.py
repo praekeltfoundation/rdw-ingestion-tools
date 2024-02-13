@@ -6,7 +6,6 @@ class Flows:
         self._session = session
 
     def get_flows(self, **kwargs):
-
         params = {**kwargs}
         request = "flows.json"
 

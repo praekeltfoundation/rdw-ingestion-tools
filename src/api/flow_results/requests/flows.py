@@ -3,7 +3,6 @@ class Flows:
         self._session = session
 
     def get_ids(self, **kwargs):
-
         params = {**kwargs}
 
         request = ""
@@ -16,7 +15,6 @@ class Flows:
         return ids
 
     def get(self, **kwargs):
-
         ids = self.get_ids()
 
         params = {**kwargs}

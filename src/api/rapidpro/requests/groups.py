@@ -6,7 +6,6 @@ class Groups:
         self._session = session
 
     def get_groups(self, **kwargs):
-
         params = {**kwargs}
         request = "groups.json"
 

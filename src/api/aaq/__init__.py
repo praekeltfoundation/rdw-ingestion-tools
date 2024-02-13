@@ -36,7 +36,6 @@ class Session(Session):
         return super().request(method, url, **kwargs)
 
     def get(self, url, **kwargs):
-
         params = {**kwargs}
 
         params["offset"] = 0

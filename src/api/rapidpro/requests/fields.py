@@ -6,7 +6,6 @@ class Fields:
         self._session = session
 
     def get_fields(self, **kwargs):
-
         params = {**kwargs}
         request = "fields.json"
 

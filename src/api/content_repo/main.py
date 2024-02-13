@@ -5,6 +5,5 @@ from . import session
 
 
 class pyContent:
-
     pageviews = PageViews(session)
     pages = Pages(session)

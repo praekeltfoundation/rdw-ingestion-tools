@@ -6,7 +6,6 @@ class Contacts:
         self._session = session
 
     def get_contacts(self, **kwargs):
-
         params = {**kwargs}
         request = "contacts.json"
 

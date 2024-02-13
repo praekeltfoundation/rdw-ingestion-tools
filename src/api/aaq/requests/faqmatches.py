@@ -6,7 +6,6 @@ class FAQMatches:
         self._session = session
 
     def get_faqmatches(self, **kwargs):
-
         url = "faqmatches"
 
         response_list = self._session.get(url, **kwargs)

@@ -6,7 +6,6 @@ class Runs:
         self._session = session
 
     def get_runs(self, **kwargs):
-
         params = {**kwargs}
         request = "runs.json"
 

@@ -6,7 +6,6 @@ class InboundsUD:
         self._session = session
 
     def get_inbounds_ud(self, **kwargs):
-
         url = "inbounds_ud"
 
         response_list = self._session.get(url, **kwargs)

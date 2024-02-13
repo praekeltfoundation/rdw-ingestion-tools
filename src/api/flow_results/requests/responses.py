@@ -12,7 +12,6 @@ class Responses:
         return link_split
 
     def get_ids(self, **kwargs):
-
         params = {**kwargs}
 
         request = ""
@@ -25,7 +24,6 @@ class Responses:
         return ids
 
     def get(self, start_time, end_time, max_retries=3, **kwargs):
-
         ids = self.get_ids()
 
         params = {}

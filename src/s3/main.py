@@ -4,5 +4,4 @@ from . import session
 
 
 class pyS3:
-
     s3 = S3(session)
