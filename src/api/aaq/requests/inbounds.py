@@ -1,3 +1,5 @@
+from ast import literal_eval
+
 from pandas import DataFrame, concat
 
 
@@ -11,7 +13,7 @@ class Inbounds:
         response_list = self._session.get(url, **kwargs)
 
         response_list = [
-            {key: str(d[key]) for key in d.keys()} for d in response_list
+            {key: str(d[key]) for key in d} for d in response_list
         ]
 
         try:
@@ -30,20 +32,20 @@ class Inbounds:
         response_list = self._session.get(url, **kwargs)
 
         response_list = [
-            {key: str(d[key]) for key in d.keys()} for d in response_list
+            {key: str(d[key]) for key in d} for d in response_list
         ]
 
         scores_list = []
         for response in response_list:
             scores = []
             id = response["inbound_id"]
-            model_scoring = eval(response["model_scoring"])
+            model_scoring = literal_eval(response["model_scoring"])
             for faq in model_scoring:
                 faqs = model_scoring[faq]
                 if isinstance(faqs, str):
                     break
                 rank = ""
-                if "rank" in faqs.keys():
+                if "rank" in faqs:
                     rank = faqs["rank"]
                 scores.append(
                     {

@@ -9,22 +9,23 @@ class S3KeyMissingError(Exception):
 
 try:
     S3_KEY = os.environ["S3_KEY"]
-except KeyError:
+except KeyError as err:
     raise S3KeyMissingError(
         "Unable to locate S3_KEY in the global environment."
-    )
+    ) from err
 
 try:
     S3_SECRET = os.environ["S3_SECRET"]
-except KeyError:
+except KeyError as err:
     raise S3KeyMissingError(
         "Unable to locate S3_SECRET in the global environment."
-    )
+    ) from err
 
 
 if not all([S3_KEY, S3_SECRET]):
     raise S3KeyMissingError(
-        "Unable to locate one or both of S3_KEY and S3_SECRET in the global enviroment."
+        """Unable to locate one or both of S3_KEY and S3_SECRET
+        in the global enviroment."""
     )
 
 
@@ -39,4 +40,4 @@ class Session(Session):
 
 session = Session(key=S3_KEY, secret=S3_SECRET)
 
-from .main import pyS3
+from .main import pyS3 as pyS3

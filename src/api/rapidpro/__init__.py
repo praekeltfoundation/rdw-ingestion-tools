@@ -15,14 +15,16 @@ class URLConfigMissingError(Exception):
 try:
     API_KEY = os.environ["RAPIDPRO_API_KEY"]
     BASE_URL = os.environ["RAPIDPRO_API_BASE_URL"]
-except KeyError:
+except KeyError as err:
     raise APIKeyMissingError(
-        "Unable to locate RAPIDPRO_API_KEY or RAPIDPRO_API_BASE_URL in the global environment."
-    )
+        """Unable to locate RAPIDPRO_API_KEY or RAPIDPRO_API_BASE_URL
+        in the global environment."""
+    ) from err
 
 if not API_KEY or not BASE_URL:
     raise APIKeyMissingError(
-        "Unable to locate RAPIDPRO_API_KEY or RAPIDPRO_API_BASE_URL in the global environment."
+        """Unable to locate RAPIDPRO_API_KEY or RAPIDPRO_API_BASE_URL
+        in the global environment."""
     )
 
 
@@ -70,4 +72,4 @@ session.params = {}
 session.headers = {}
 session.headers = {"Authorization": f"Token {API_KEY}"}
 
-from .main import pyRapid
+from .main import pyRapid as pyRapid

@@ -66,7 +66,7 @@ class Flows:
             for flow in flows
         ]
 
-        for question, flow_id in zip(questions, ids):
+        for question, flow_id in zip(questions, ids, strict=True):
             id = flow_id
             for key in list(question.keys()):
                 q_data["flow_id"].append(id)

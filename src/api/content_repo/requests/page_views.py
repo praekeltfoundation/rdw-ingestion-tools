@@ -37,9 +37,6 @@ class PageViews:
             pageviews.append(json_normalize(item["results"], sep="_"))
         pageviews = concat(pageviews)
 
-        if response["next"]:
-            page = response["next"]
-        else:
-            page = None
+        page = response["next"] if response["next"] else None
 
         return {"pageviews": pageviews, "page": page}
