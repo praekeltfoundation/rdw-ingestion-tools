@@ -17,14 +17,14 @@ try:
     BASE_URL = os.environ["SURVEY_API_BASE_URL"]
 except KeyError as err:
     raise APIKeyMissingError(
-        "Unable to locate SURVEY_API_KEY or SURVEY_API_BASE_URL
-        in the global environment."
+        """Unable to locate SURVEY_API_KEY or SURVEY_API_BASE_URL
+        in the global environment."""
     ) from err
 
 if not API_KEY or not BASE_URL:
     raise APIKeyMissingError(
-        "Unable to locate SURVEY_API_KEY or SURVEY_API_BASE_URL
-        in the global environment."
+        """Unable to locate SURVEY_API_KEY or SURVEY_API_BASE_URL
+        in the global environment."""
     )
 
 
