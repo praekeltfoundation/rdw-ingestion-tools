@@ -1,11 +1,11 @@
 [tool.poetry]
 name = "rdw-ingestion-tools"
 version = "0.3.4"
-description = "AA Python package for integrating third-party data to Reach Digital Health's AWS Datta Lake."
+description = "A Python package for integrating third-party data to Reach Digital Health's AWS Datta Lake."
 authors = ["Schalk1e <schalk@reachdigitalhealth.org>"]
 license = "MIT"
 readme = "README.md"
-packages = [{include = "rdw_ingestion_tools"}]
+packages = [{include = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
