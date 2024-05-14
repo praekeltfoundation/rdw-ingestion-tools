@@ -40,7 +40,7 @@ class Messages:
                 inbound_messages.append(
                     json_normalize(obj["messages"], sep="_")
                 )
-            elif "_vnd" in obj:
+            else:
                 outbound_messages.append(json_normalize(obj, sep="_"))
 
         try:
