@@ -20,6 +20,7 @@ black = "^24.4.2"
 isort = "^5.13.2"
 yamllint = "^1.35.1"
 ruff = "^0.4.4"
+attrs = "^23.2.0"
 
 
 [tool.poetry.group.types.dependencies]

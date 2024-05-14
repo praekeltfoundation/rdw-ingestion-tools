@@ -1,16 +1,33 @@
 from ast import literal_eval
 
+from attrs import define
 from pandas import DataFrame, concat
 
+from .. import BaseSession
 
+
+@define
 class Inbounds:
-    def __init__(self, session):
-        self._session = session
+    """Dedicated to the inbounds endpoint of the AAQ Data Export API.
 
-    def get_inbounds(self, **kwargs):
+    Args:
+       A BaseSession object.
+    """
+
+    base_session: type[BaseSession]
+
+    def get_inbounds(self, **kwargs) -> DataFrame:
+        """Get a pandas DataFrame of inbound messages.
+
+        Args:
+           **kwargs
+
+        Returns:
+           pandas.DataFrame
+        """
         url = "inbounds"
 
-        response_list = self._session.get(url, **kwargs)
+        response_list = self.base_session.get(url, **kwargs)
 
         response_list = [
             {key: str(d[key]) for key in d} for d in response_list
@@ -26,10 +43,18 @@ class Inbounds:
 
         return inbounds
 
-    def get_faqranks(self, **kwargs):
+    def get_faqranks(self, **kwargs) -> DataFrame:
+        """Get a pandas DataFrame of faqranks for each inbound message.
+
+        Args:
+           **kwargs
+
+        Returns:
+           pandas.DataFrame
+        """
         url = "inbounds"
 
-        response_list = self._session.get(url, **kwargs)
+        response_list = self.base_session.get(url, **kwargs)
 
         response_list = [
             {key: str(d[key]) for key in d} for d in response_list
@@ -39,6 +64,8 @@ class Inbounds:
         for response in response_list:
             scores = []
             id = response["inbound_id"]
+            # We need to iterate over the model_scoring object.
+            # This is a dict object that the API returns as str.
             model_scoring = literal_eval(response["model_scoring"])
             for faq in model_scoring:
                 faqs = model_scoring[faq]
