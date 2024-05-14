@@ -1,31 +1,11 @@
-import os
 from urllib.parse import urljoin
 
 from requests import Session
 
+from .. import config_from_env
 
-class APIKeyMissingError(Exception):
-    pass
-
-
-class URLConfigMissingError(Exception):
-    pass
-
-
-try:
-    API_KEY = os.environ["CONTENT_REPO_API_KEY"]
-    BASE_URL = os.environ["CONTENT_REPO_BASE_URL"]
-except KeyError as err:
-    raise APIKeyMissingError(
-        """Unable to locate CONTENT_REPO_API_KEY or CONTENT_REPO_BASE_URL in
-        the global environment."""
-    ) from err
-
-if not API_KEY or not BASE_URL:
-    raise APIKeyMissingError(
-        """Unable to locate CONTENT_REPO_API_KEY or CONTENT_REPO_BASE_URL in
-        the global environment."""
-    )
+API_KEY = config_from_env("CONTENT_REPO_API_KEY")
+BASE_URL = config_from_env("CONTENT_REPO_BASE_URL")
 
 
 class Session(Session):

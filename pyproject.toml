@@ -5,7 +5,10 @@ description = "A Python package for integrating third-party data to Reach Digita
 authors = ["Schalk1e <schalk@reachdigitalhealth.org>"]
 license = "MIT"
 readme = "README.md"
-packages = [{include = "src"}]
+packages = [
+   {include = "api", from = "src"},
+   {include = "s3", from = "src"}
+   ]
 
 [tool.poetry.dependencies]
 python = "^3.10"
