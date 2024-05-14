@@ -1,29 +1,11 @@
-import os
 from urllib.parse import urljoin
 
 from requests import Session
 
+from .. import config_from_env
 
-class APIKeyMissingError(Exception):
-    pass
-
-
-class URLConfigMissingError(Exception):
-    pass
-
-
-try:
-    API_KEY = os.environ["FLOW_RESULTS_API_KEY"]
-    BASE_URL = os.environ["FLOW_RESULTS_API_BASE_URL"]
-except KeyError:
-    raise APIKeyMissingError(
-        "Unable to locate FLOW_RESULTS_API_KEY or FLOW_RESULTS_API_BASE_URL in the global environment."
-    )
-
-if not API_KEY or not BASE_URL:
-    raise APIKeyMissingError(
-        "Unable to locate FLOW_RESULTS_API_KEY or FLOW_RESULTS_API_BASE_URL in the global environment."
-    )
+API_KEY = config_from_env("FLOW_RESULTS_API_KEY")
+BASE_URL = config_from_env("FLOW_RESULTS_API_BASE_URL")
 
 
 class Session(Session):
@@ -41,4 +23,4 @@ session.params = {}
 session.headers = {}
 session.headers = {"Authorization": f"Token {API_KEY}"}
 
-from .main import pyFlows
+from .main import pyFlows as pyFlows

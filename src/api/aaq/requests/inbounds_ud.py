@@ -11,7 +11,7 @@ class InboundsUD:
         response_list = self._session.get(url, **kwargs)
 
         response_list = [
-            {key: str(d[key]) for key in d.keys()} for d in response_list
+            {key: str(d[key]) for key in d} for d in response_list
         ]
 
         try:

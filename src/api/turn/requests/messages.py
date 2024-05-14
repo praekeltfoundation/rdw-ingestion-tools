@@ -35,12 +35,12 @@ class Messages:
 
         contacts, inbound_messages, outbound_messages = [], [], []
         for obj in response_list:
-            if "_vnd" not in obj.keys():
+            if "_vnd" not in obj:
                 contacts.append(json_normalize(obj["contacts"], sep="_"))
                 inbound_messages.append(
                     json_normalize(obj["messages"], sep="_")
                 )
-            elif "_vnd" in obj.keys():
+            else:
                 outbound_messages.append(json_normalize(obj, sep="_"))
 
         try:

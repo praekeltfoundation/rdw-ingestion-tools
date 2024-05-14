@@ -9,10 +9,8 @@ class S3:
         response = self._session.client("s3").list_objects_v2(
             Bucket=bucket, Prefix=prefix
         )
-        if "Contents" in response:
-            return False
-        else:
-            return True
+
+        return "Contents" not in response
 
     def get_paginator(self, bucket, prefix):
         paginator = self._session.client("s3").get_paginator("list_objects_v2")
