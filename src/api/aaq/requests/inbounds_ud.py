@@ -1,14 +1,39 @@
+from attrs import define
 from pandas import DataFrame, concat
 
+from .. import BaseSession
 
+
+@define
 class InboundsUD:
-    def __init__(self, session) -> None:
-        self._session = session
+    """Dedicated to the inbounds_ud endpoint of the AAQ Data Export API.
 
-    def get_inbounds_ud(self, **kwargs):
+    This allows us to retrieve data on urgency detection rules associated
+    with different inbound messages.
+
+    Args:
+       base_session: a BaseSession object.
+    """
+
+    base_session: type[BaseSession]
+
+    def get_inbounds_ud(self, **kwargs) -> DataFrame:
+        """Get inbounds from the urgency detection endpoint.
+
+        Args:
+           **kwargs
+           start_datetime: [via *kwargs] The start datetime query parameter to
+              send. Example: '2020-01-01 00:00:00'
+           end_datetime: [via **kwargs] The end datetime query parameter to
+              send. Example: '2020-01-01 00:00:00'
+
+        Returns:
+           pandas.DataFrame
+        """
+
         url = "inbounds_ud"
 
-        response_list = self._session.get(url, **kwargs)
+        response_list = self.base_session.get(url, **kwargs)
 
         response_list = [
             {key: str(d[key]) for key in d} for d in response_list

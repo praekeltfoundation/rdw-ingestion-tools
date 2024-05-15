@@ -10,6 +10,9 @@ from .. import BaseSession
 class Inbounds:
     """Dedicated to the inbounds endpoint of the AAQ Data Export API.
 
+    This allows us to retrieve inbound messages sent to the IDI AAQ instance
+    for a given project.
+
     Args:
        A BaseSession object.
     """
@@ -21,6 +24,11 @@ class Inbounds:
 
         Args:
            **kwargs
+           start_datetime: [via *kwargs] The start datetime query parameter to
+              send. Example: '2020-01-01 00:00:00'
+           end_datetime: [via **kwargs] The end datetime query parameter to
+              send. Example: '2020-01-01 00:00:00'
+
 
         Returns:
            pandas.DataFrame
