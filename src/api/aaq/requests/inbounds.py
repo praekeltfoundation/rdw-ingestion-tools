@@ -3,39 +3,36 @@ from ast import literal_eval
 from attrs import define
 from pandas import DataFrame, concat
 
-from .. import BaseSession
+from .. import BaseClient
 
 
 @define
 class Inbounds:
     """Dedicated to the inbounds endpoint of the AAQ Data Export API.
 
-    This allows us to retrieve inbound messages sent to the IDI AAQ instance
-    for a given project.
+    This allows us to retrieve inbound messages sent to the IDI AAQ instance,
+    the ranks of the various FAQ's as determined by the model for each inbound
+    etc.
 
-    Args:
-       A BaseSession object.
     """
 
-    base_session: type[BaseSession]
+    base_client: type[BaseClient]
 
     def get_inbounds(self, **kwargs) -> DataFrame:
         """Get a pandas DataFrame of inbound messages.
 
-        Args:
-           **kwargs
-           start_datetime: [via *kwargs] The start datetime query parameter to
-              send. Example: '2020-01-01 00:00:00'
-           end_datetime: [via **kwargs] The end datetime query parameter to
-              send. Example: '2020-01-01 00:00:00'
+        This endpoint supports time-based query parameters which can
+        be passed to this method as kwargs as in the following example:
 
+        pyAAQ.inbounds.get_inbounds(
+           start_datetime="2020-01-01 00:00:00",
+           end_datetime="2020-12-31 00:00:00"
+           )
 
-        Returns:
-           pandas.DataFrame
         """
         url = "inbounds"
 
-        response_list = self.base_session.get(url, **kwargs)
+        response_list = self.base_client.paginate_get(url, **kwargs)
 
         response_list = [
             {key: str(d[key]) for key in d} for d in response_list
@@ -54,15 +51,18 @@ class Inbounds:
     def get_faqranks(self, **kwargs) -> DataFrame:
         """Get a pandas DataFrame of faqranks for each inbound message.
 
-        Args:
-           **kwargs
+        This endpoint supports time-based query parameters which can
+        be passed to this method as kwargs as in the following example:
 
-        Returns:
-           pandas.DataFrame
+        pyAAQ.inbounds.get_faqranks(
+           start_datetime="2020-01-01 00:00:00",
+           end_datetime="2020-12-31 00:00:00"
+           )
+
         """
         url = "inbounds"
 
-        response_list = self.base_session.get(url, **kwargs)
+        response_list = self.base_client.paginate_get(url, **kwargs)
 
         response_list = [
             {key: str(d[key]) for key in d} for d in response_list

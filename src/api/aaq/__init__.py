@@ -1,7 +1,4 @@
-from urllib.parse import urljoin
-
-from attrs import define
-from requests import Response, Session
+from httpx import Client
 
 from .. import config_from_env
 
@@ -9,49 +6,19 @@ API_KEY = config_from_env("AAQ_API_KEY")
 BASE_URL = config_from_env("AAQ_API_BASE_URL")
 
 
-@define
-class BaseSession(Session):
-    """Base requests session to use in requests to different API endpoints in
-    the module.
+class BaseClient(Client):
+    """To be used in various enpoint specific requests.
 
-    Args:
-       url_base: The base url to reference (str) (This has to be str | bytes in
-       accordance with what requests accepts?)
-       *args
-       **kwargs
+    Need to subclass here in order to overload `paginate_get` which is useful
+    for each of the different endpoint specific request in this submodule.
+
     """
 
-    url_base: str
-
-    # TODO: attrs doesn't like subclassing.
-    def __attrs_post_init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args, **kwargs) -> Client:
         super().__init__(*args, **kwargs)
 
-    def request(self, method: str, url: str, **kwargs) -> Response:
-        """Send request to an API endpoint by providing only the endpoint with
-        the base url as part of initialisation.
-
-        Args:
-           method: The method type. aGET, PUT etc. (str)
-           url: The endpoint. (str)
-           **kwargs
-
-        Returns:
-           requests.Response
-        """
-        url = urljoin(self.url_base, url)
-        return super().request(method, url, **kwargs)
-
-    def get(self, url: str, limit: int = 100, **kwargs) -> list[dict]:
-        """Paginate over pages in an AAQ endpoint up to a limit.
-
-        Args:
-           url: the endpoint. (str)
-           limit: The limit of pages to paginate over. (int)
-
-        Returns:
-           list[Response]
-        """
+    def paginate_get(self, url: str, limit: int = 100, **kwargs) -> list[dict]:
+        """Paginate over pages in an AAQ endpoint up to a limit."""
         params = {**kwargs}
 
         params["offset"] = 0
@@ -68,7 +35,7 @@ class BaseSession(Session):
                 params["offset"] + params["limit"],
                 sep=" ",
             )
-            response = self.request("GET", url, params=params)
+            response = self.get(url, params=params)
             response.raise_for_status()
             result = response.json()["result"]
             response_list.append(result)
@@ -82,13 +49,12 @@ class BaseSession(Session):
         return response_list
 
 
-base_session = BaseSession(url_base=BASE_URL)
-base_session.params = {}
-base_session.headers = {}
-base_session.headers = {
+headers = {
     "Authorization": f"Bearer {API_KEY}",
     "Accept": "application/vnd.v1+json",
     "Content-Type": "application/json",
 }
+
+base_client = BaseClient(base_url=BASE_URL, headers=headers)
 
 from .main import pyAAQ as pyAAQ

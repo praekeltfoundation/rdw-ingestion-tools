@@ -1,7 +1,7 @@
 from attrs import define
 from pandas import DataFrame, concat
 
-from .. import BaseSession
+from .. import BaseClient
 
 
 @define
@@ -11,24 +11,15 @@ class UrgencyRules:
     This allows us to retrieve different urgency rules that are implemented
     for a given AAQ instance.
 
-    Args:
-       A BaseSession object.
     """
 
-    base_session: type[BaseSession]
+    base_session: type[BaseClient]
 
     def get_urgency_rules(self, **kwargs) -> DataFrame:
-        """Get a pandas DataFrame of urgency rules.
-
-        Args:
-           **kwargs
-
-        Returns:
-           pandas.DataFrame
-        """
+        """Get a pandas DataFrame of urgency rules."""
         url = "urgency_rules"
 
-        response_list = self.base_session.get(url, **kwargs)
+        response_list = self.base_session.paginate_get(url, **kwargs)
 
         response_list = [
             {key: str(d[key]) for key in d} for d in response_list

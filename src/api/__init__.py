@@ -2,20 +2,13 @@ import os
 
 
 class MissingConfig(Exception):
-    """Exception to return if an env var is not found in the global
-    environment.
-    """
+    """Raised if a required config environment variable is not set."""
 
 
 def config_from_env(key: str) -> str:
     """Checks whether key exists in global environment and returns it if it
-    does. Else it returns a MissingConfig Exception.
+    does. Else it raises a MissingConfig Exception.
 
-    Args:
-       key: The name of the env var to return. (str)
-
-    Returns:
-       str
     """
     if not (value := os.environ.get(key, None)):
         raise MissingConfig(f"{key} not set in the global environment")

@@ -1,31 +1,27 @@
 from attrs import define
 from pandas import DataFrame, concat
 
-from .. import BaseSession
+from .. import BaseClient
 
 
 @define
 class FAQMatches:
-    """Dedicated to the faqmaches endpoint of the AAQ Data Export API.
+    """Dedicated to the faqmatches endpoint of the AAQ Data Export API."""
 
-    Args:
-       A BaseSession object.
-    """
-
-    base_session: type[BaseSession]
+    base_client: type[BaseClient]
 
     def get_faqmatches(self, **kwargs) -> DataFrame:
         """Get a pandas DataFrame of faqmatches.
 
-        Args:
-           **kwargs
+        No time-based query parameters are supported for this endpoint.
+        Should return the full faqmatches object or an empty DataFrame if
+        no records are returned by the API.
 
-        Returns:
-           pandas.DataFrame
         """
+
         url = "faqmatches"
 
-        response_list = self.base_session.get(url, **kwargs)
+        response_list = self.base_client.paginate_get(url, **kwargs)
 
         response_list = [
             {key: str(d[key]) for key in d} for d in response_list
