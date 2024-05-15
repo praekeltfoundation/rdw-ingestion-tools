@@ -12,6 +12,9 @@ class BaseClient(Client):
     Need to subclass here in order to overload `paginate_get` which is useful
     for each of the different endpoint specific request in this submodule.
 
+    This also allows calls like pyAAQ.inbounds.base_client.close(), which is
+    recommended for use of Client outside a context manager.
+
     """
 
     def __init__(self, *args, **kwargs) -> Client:
