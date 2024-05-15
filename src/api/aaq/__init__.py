@@ -7,17 +7,18 @@ BASE_URL = config_from_env("AAQ_API_BASE_URL")
 
 
 class BaseClient(Client):
-    """To be used in various enpoint specific requests.
+    """To be used in various endpoint specific requests.
 
     Need to subclass here in order to overload `paginate_get` which is useful
     for each of the different endpoint specific request in this submodule.
 
     This also allows calls like pyAAQ.inbounds.base_client.close(), which is
-    recommended for use of Client outside a context manager.
+    recommended for use of Client outside of a context manager.
 
     """
 
     def __init__(self, *args, **kwargs) -> Client:
+        """We expect a user to pass a base_url kwarg here to pass to Client."""
         super().__init__(*args, **kwargs)
 
     def paginate_get(self, url: str, limit: int = 100, **kwargs) -> list[dict]:
