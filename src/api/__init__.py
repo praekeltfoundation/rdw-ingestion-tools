@@ -6,8 +6,8 @@ class MissingConfig(Exception):
 
 
 def config_from_env(key: str) -> str:
-    """Checks whether key exists in global environment and returns it if it
-    does. Else it raises a MissingConfig Exception.
+    """Fetches a config value from the global environment, raising
+    MissingConfig if it isn't there.
 
     """
     if not (value := os.environ.get(key, None)):

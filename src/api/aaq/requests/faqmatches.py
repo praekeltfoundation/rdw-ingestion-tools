@@ -1,14 +1,15 @@
 from attrs import define
+from httpx import Client
 from pandas import DataFrame, concat
 
-from .. import BaseClient
+from .. import paginate_get
 
 
 @define
 class FAQMatches:
     """Dedicated to the faqmatches endpoint of the AAQ Data Export API."""
 
-    base_client: type[BaseClient]
+    httpx_client: Client
 
     def get_faqmatches(self, **kwargs) -> DataFrame:
         """Get a pandas DataFrame of faqmatches.
@@ -21,7 +22,9 @@ class FAQMatches:
 
         url = "faqmatches"
 
-        response_list = self.base_client.paginate_get(url, **kwargs)
+        response_list = paginate_get(
+            httpx_client=self.httpx_client, url=url, **kwargs
+        )
 
         response_list = [
             {key: str(d[key]) for key in d} for d in response_list

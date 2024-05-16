@@ -1,7 +1,8 @@
 from attrs import define
+from httpx import Client
 from pandas import DataFrame, concat
 
-from .. import BaseClient
+from .. import paginate_get
 
 
 @define
@@ -13,13 +14,15 @@ class UrgencyRules:
 
     """
 
-    base_session: type[BaseClient]
+    httpx_client: Client
 
     def get_urgency_rules(self, **kwargs) -> DataFrame:
         """Get a pandas DataFrame of urgency rules."""
         url = "urgency_rules"
 
-        response_list = self.base_session.paginate_get(url, **kwargs)
+        response_list = paginate_get(
+            httpx_client=self.httpx_client, url=url, **kwargs
+        )
 
         response_list = [
             {key: str(d[key]) for key in d} for d in response_list
