@@ -2,7 +2,7 @@ from attrs import define
 from httpx import Client
 from pandas import DataFrame, concat
 
-from .. import paginate_get
+from .. import get_paginated
 
 
 @define
@@ -14,7 +14,7 @@ class InboundsUD:
 
     """
 
-    httpx_client: Client
+    client: Client
 
     def get_inbounds_ud(self, **kwargs) -> DataFrame:
         """Get inbounds from the urgency detection endpoint.
@@ -31,13 +31,7 @@ class InboundsUD:
 
         url = "inbounds_ud"
 
-        response_list = paginate_get(
-            httpx_client=self.httpx_client, url=url, **kwargs
-        )
-
-        response_list = [
-            {key: str(d[key]) for key in d} for d in response_list
-        ]
+        response_list = get_paginated(client=self.client, url=url, **kwargs)
 
         try:
             inbounds_ud = concat(
