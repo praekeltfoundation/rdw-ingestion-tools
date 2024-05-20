@@ -27,10 +27,11 @@ def get_paginated(
         response.raise_for_status()
         result = response.json()["result"]
         response_list.extend(result)
-        if len(result) == params["limit"]:
-            params["offset"] += params["limit"]
-        elif len(result) < params["limit"]:
+        if len(result) < limit:
             break
+        else:
+            params["offset"] += limit
+
 
     response_list = [{k: str(v) for k, v in d.items()} for d in response_list]
 
