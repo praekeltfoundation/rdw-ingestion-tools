@@ -7,11 +7,15 @@ BASE_URL = config_from_env("AAQ_API_BASE_URL")
 
 
 def get_paginated(
-    client: Client, url: str, limit: int = 100, offset: int = 0, **kwargs
+    client: Client,
+    url: str,
+    limit: int = 100,
+    offset: int = 0,
+    **kwargs: str | int,
 ) -> list[dict]:
     """Paginate over pages in an AAQ endpoint up to a limit."""
 
-    params = {"offset": offset, "limit": limit, **kwargs}
+    params = {"offset": offset, "limit": limit}
 
     response_list = []
 
@@ -20,10 +24,12 @@ def get_paginated(
             "Retrieving results for offsets: ",
             params["offset"],
             "to",
-            params["offset"] + params["limit"],
+            params["offset"] + limit,
             sep=" ",
         )
-        response = client.get(url, params=params)
+        # Need {**params, **kwargs} - mypy doesn't like mixing str and int when
+        # summing things :/
+        response = client.get(url, params={**params, **kwargs})
         response.raise_for_status()
         result = response.json()["result"]
         response_list.extend(result)
@@ -44,6 +50,6 @@ headers = {
 }
 
 
-client = Client(base_url=BASE_URL, headers=headers)
+client: Client = Client(base_url=BASE_URL, headers=headers)
 
 from .main import pyAAQ as pyAAQ

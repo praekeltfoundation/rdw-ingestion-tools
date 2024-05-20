@@ -11,7 +11,7 @@ class FAQMatches:
 
     client: Client
 
-    def get_faqmatches(self, **kwargs) -> DataFrame:
+    def get_faqmatches(self, **kwargs: str | int) -> DataFrame:
         """Get a pandas DataFrame of faqmatches.
 
         No time-based query parameters are supported for this endpoint.
@@ -22,7 +22,14 @@ class FAQMatches:
 
         url = "faqmatches"
 
-        response_list = get_paginated(client=self.client, url=url, **kwargs)
+        """
+        Open issue in mypy means we need to set defaults here to stop
+        mypy from complaining: https://github.com/python/mypy/issues/1969
+
+        """
+        response_list = get_paginated(
+            client=self.client, url=url, limit=100, offset=0, **kwargs
+        )
 
         try:
             faqmatches = concat(

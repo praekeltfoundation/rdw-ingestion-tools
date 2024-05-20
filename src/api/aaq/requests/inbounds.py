@@ -19,7 +19,7 @@ class Inbounds:
 
     client: Client
 
-    def get_inbounds(self, **kwargs) -> DataFrame:
+    def get_inbounds(self, **kwargs: str | int) -> DataFrame:
         """Get a pandas DataFrame of inbound messages.
 
         This endpoint supports time-based query parameters which can
@@ -33,7 +33,13 @@ class Inbounds:
         """
         url = "inbounds"
 
-        response_list = get_paginated(client=self.client, url=url, **kwargs)
+        """
+        See faqmatches.py for context on usage of defaults.
+
+        """
+        response_list = get_paginated(
+            client=self.client, url=url, limit=100, offset=0, **kwargs
+        )
 
         try:
             inbounds = concat([DataFrame(d, index=[0]) for d in response_list])
@@ -45,7 +51,7 @@ class Inbounds:
 
         return inbounds
 
-    def get_faqranks(self, **kwargs) -> DataFrame:
+    def get_faqranks(self, **kwargs: str | int) -> DataFrame:
         """Get a pandas DataFrame of faqranks for each inbound message.
 
         This endpoint supports time-based query parameters which can
@@ -59,7 +65,13 @@ class Inbounds:
         """
         url = "inbounds"
 
-        response_list = get_paginated(client=self.client, url=url, **kwargs)
+        """
+        See faqmatches.py for context on usage of defaults.
+
+        """
+        response_list = get_paginated(
+            client=self.client, url=url, limit=100, offset=0, **kwargs
+        )
 
         response_list = [
             {key: str(d[key]) for key in d} for d in response_list

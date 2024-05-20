@@ -16,11 +16,17 @@ class UrgencyRules:
 
     client: Client
 
-    def get_urgency_rules(self, **kwargs) -> DataFrame:
+    def get_urgency_rules(self, **kwargs: str | int) -> DataFrame:
         """Get a pandas DataFrame of urgency rules."""
         url = "urgency_rules"
 
-        response_list = get_paginated(client=self.client, url=url, **kwargs)
+        """
+        See faqmatches.py for context on usage of defaults.
+
+        """
+        response_list = get_paginated(
+            client=self.client, url=url, limit=100, offset=0, **kwargs
+        )
 
         try:
             urgency_rules = concat(

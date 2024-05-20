@@ -16,7 +16,7 @@ class InboundsUD:
 
     client: Client
 
-    def get_inbounds_ud(self, **kwargs) -> DataFrame:
+    def get_inbounds_ud(self, **kwargs: str | int) -> DataFrame:
         """Get inbounds from the urgency detection endpoint.
 
         This endpoint supports time-based query parameters which can be
@@ -31,7 +31,13 @@ class InboundsUD:
 
         url = "inbounds_ud"
 
-        response_list = get_paginated(client=self.client, url=url, **kwargs)
+        """
+        See faqmatches.py for context on usage of defaults.
+
+        """
+        response_list = get_paginated(
+            client=self.client, url=url, limit=100, offset=0, **kwargs
+        )
 
         try:
             inbounds_ud = concat(
