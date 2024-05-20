@@ -13,12 +13,3 @@ class pyAAQ:
     faqmatches = FAQMatches(client)
     inbounds_ud = InboundsUD(client)
     urgency_rules = UrgencyRules(client)
-
-    def client_close():
-        """Exposing the ability to close the client here.
-
-        The client is being used outside of a context manager
-        and httpx recommends closing these connections in this case.
-
-        """
-        client.close()

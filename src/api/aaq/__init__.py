@@ -32,7 +32,6 @@ def get_paginated(
         else:
             params["offset"] += limit
 
-
     response_list = [{k: str(v) for k, v in d.items()} for d in response_list]
 
     return response_list
