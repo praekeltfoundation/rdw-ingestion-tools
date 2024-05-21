@@ -27,7 +27,7 @@ def get_paginated(
             params["offset"] + limit,
             sep=" ",
         )
-        # Need {**params, **kwargs}. mypy dislikes str|int for lines 29, 41.
+        # Need {**params, **kwargs}. mypy dislikes str|int for lines 27, 40.
         response = client.get(url, params={**params, **kwargs})
         response.raise_for_status()
 
