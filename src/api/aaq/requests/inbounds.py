@@ -1,10 +1,23 @@
-from ast import literal_eval
+from collections.abc import Iterator
 
 from attrs import define
 from httpx import Client
-from pandas import DataFrame, concat
+from pandas import DataFrame
 
 from .. import get_paginated
+
+
+def build_faqranks(model_scoring_dict: dict) -> Iterator[dict]:
+    for k, v in model_scoring_dict.items():
+        if isinstance(v, dict):
+            rank = ""
+            if "rank" in v:
+                rank = v["rank"]
+            yield {
+                "faq_id": k,
+                "score": v["overall_score"],
+                "rank": rank,
+            }
 
 
 @define
@@ -37,19 +50,11 @@ class Inbounds:
         See faqmatches.py for context on usage of defaults.
 
         """
-        response_list = get_paginated(
+        inbounds_generator = get_paginated(
             client=self.client, url=url, limit=100, offset=0, **kwargs
         )
 
-        try:
-            inbounds = concat([DataFrame(d, index=[0]) for d in response_list])
-        except ValueError as e:
-            if str(e) != "No objects to concatenate":
-                raise
-            else:
-                inbounds = DataFrame()
-
-        return inbounds
+        return DataFrame(inbounds_generator)
 
     def get_faqranks(self, **kwargs: str | int) -> DataFrame:
         """Get a pandas DataFrame of faqranks for each inbound message.
@@ -58,55 +63,18 @@ class Inbounds:
         be passed to this method as kwargs as in the following example:
 
         pyAAQ.inbounds.get_faqranks(
-           start_datetime="2020-01-01 00:00:00",
-           end_datetime="2020-12-31 00:00:00"
+           start_datetime="2023-01-01 00:00:00",
+           end_datetime="2023-12-31 00:00:00"
            )
 
         """
-        url = "inbounds"
+        inbounds = self.get_inbounds(**kwargs)
 
-        """
-        See faqmatches.py for context on usage of defaults.
-
-        """
-        response_list = get_paginated(
-            client=self.client, url=url, limit=100, offset=0, **kwargs
-        )
-
-        response_list = [
-            {key: str(d[key]) for key in d} for d in response_list
-        ]
-
-        scores_list = []
-        for response in response_list:
-            scores = []
-            id = response["inbound_id"]
-            # We need to iterate over the model_scoring object.
-            # This is a dict object that the API returns as str.
-            model_scoring = literal_eval(response["model_scoring"])
-            for faq in model_scoring:
-                faqs = model_scoring[faq]
-                if isinstance(faqs, str):
-                    break
-                rank = ""
-                if "rank" in faqs:
-                    rank = faqs["rank"]
-                scores.append(
-                    {
-                        "inbound_id": id,
-                        "faq_id": faq,
-                        "score": faqs["overall_score"],
-                        "rank": rank,
-                    }
+        faq_ranks_list = []
+        for _, row in inbounds.iterrows():
+            for faqrank in build_faqranks(dict(row["model_scoring"])):
+                faq_ranks_list.append(
+                    {"inbound_id": row["inbound_id"], **faqrank}
                 )
-            scores_list.append(DataFrame(scores))
 
-        try:
-            faq_ranks = concat(scores_list)
-        except ValueError as e:
-            if str(e) != "No objects to concatenate":
-                raise
-            else:
-                faq_ranks = DataFrame()
-
-        return faq_ranks
+        return DataFrame(faq_ranks_list)

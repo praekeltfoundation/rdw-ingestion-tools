@@ -1,6 +1,6 @@
 from attrs import define
 from httpx import Client
-from pandas import DataFrame, concat
+from pandas import DataFrame
 
 from .. import get_paginated
 
@@ -27,18 +27,8 @@ class FAQMatches:
         mypy from complaining: https://github.com/python/mypy/issues/1969
 
         """
-        response_list = get_paginated(
+        faqmatches_generator = get_paginated(
             client=self.client, url=url, limit=100, offset=0, **kwargs
         )
 
-        try:
-            faqmatches = concat(
-                [DataFrame(d, index=[0]) for d in response_list]
-            )
-        except ValueError as e:
-            if str(e) != "No objects to concatenate":
-                raise
-            else:
-                faqmatches = DataFrame()
-
-        return faqmatches
+        return DataFrame(faqmatches_generator)

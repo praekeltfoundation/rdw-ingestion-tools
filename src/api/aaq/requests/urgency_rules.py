@@ -1,6 +1,6 @@
 from attrs import define
 from httpx import Client
-from pandas import DataFrame, concat
+from pandas import DataFrame
 
 from .. import get_paginated
 
@@ -24,18 +24,8 @@ class UrgencyRules:
         See faqmatches.py for context on usage of defaults.
 
         """
-        response_list = get_paginated(
+        urgency_rules_generator = get_paginated(
             client=self.client, url=url, limit=100, offset=0, **kwargs
         )
 
-        try:
-            urgency_rules = concat(
-                [DataFrame(d, index=[0]) for d in response_list]
-            )
-        except ValueError as e:
-            if str(e) != "No objects to concatenate":
-                raise
-            else:
-                urgency_rules = DataFrame()
-
-        return urgency_rules
+        return DataFrame(urgency_rules_generator)
