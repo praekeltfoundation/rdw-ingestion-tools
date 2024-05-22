@@ -8,6 +8,14 @@ from .. import get_paginated
 
 
 def build_faqranks(model_scoring_dict: dict) -> Iterator[dict]:
+    """Extracts important information from the AAQ model scoring dict.
+
+    Each inbound message contains a dict that contains the model scores
+    for every other faq not returned to the user. This function will
+    traverse this dict, look for nested dicts, and return only the
+    important information we care about for faqranks.
+
+    """
     for k, v in model_scoring_dict.items():
         if isinstance(v, dict):
             rank = ""
