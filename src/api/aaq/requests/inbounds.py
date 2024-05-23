@@ -1,4 +1,5 @@
 from collections.abc import Iterator
+from typing import Optional, TypedDict
 
 from attrs import define
 from httpx import Client
@@ -7,7 +8,17 @@ from pandas import DataFrame
 from .. import get_paginated
 
 
-def build_faqranks(model_scoring_dict: dict) -> Iterator[dict]:
+class FAQRank(TypedDict):
+    faq_title: str
+    overall_score: str
+    rank: str
+    faq_content_to_send: Optional[str]
+    tag_cs: Optional[dict]
+
+
+def build_faqranks(
+    model_scoring_dict: dict[str, str | FAQRank]
+) -> Iterator[dict]:
     """Extracts important information from the AAQ model scoring dict.
 
     Each inbound message contains a dict that contains the model scores
@@ -17,10 +28,8 @@ def build_faqranks(model_scoring_dict: dict) -> Iterator[dict]:
 
     """
     for k, v in model_scoring_dict.items():
-        if isinstance(v, dict):
-            rank = ""
-            if "rank" in v:
-                rank = v["rank"]
+        if not isinstance(v, str):
+            rank = v.get("rank", "")
             yield {
                 "faq_id": k,
                 "score": v["overall_score"],
