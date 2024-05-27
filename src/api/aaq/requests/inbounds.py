@@ -1,5 +1,5 @@
 from collections.abc import Iterator
-from typing import Optional, TypedDict
+from typing import TypedDict
 
 from attrs import define
 from httpx import Client
@@ -11,9 +11,9 @@ from .. import get_paginated
 class FAQRank(TypedDict):
     faq_title: str
     overall_score: str
-    rank: str
-    faq_content_to_send: Optional[str]
-    tag_cs: Optional[dict]
+    rank: str | None
+    faq_content_to_send: str | None
+    tag_cs: str | None
 
 
 def build_faqranks(
