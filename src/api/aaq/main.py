@@ -7,7 +7,7 @@ from . import session
 
 
 class pyAAQ:
-    """ """
+    """A wrapper class for the various Rapidpro endpoints."""
 
     inbounds = Inbounds(session)
     faqmatches = FAQMatches(session)

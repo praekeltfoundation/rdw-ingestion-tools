@@ -1,17 +1,43 @@
-from pandas import concat, json_normalize
+from attrs import define
+from httpx import Client
+from pandas import DataFrame, concat, json_normalize
+
+from .. import get_paginated
 
 
+@define
 class Contacts:
-    def __init__(self, session):
-        self._session = session
+    """Dedicated to the contacts endpoint of the Rapidpro API"""
 
-    def get_contacts(self, **kwargs):
+    client: Client
+
+    def get_contacts(self, **kwargs: str | int) -> DataFrame:
+        """Get a pandas DataFrame of Rapidpro contacts.
+
+        This endpoint supports time-based filtering that allows
+        to fetch results between two date parameters. Example:
+
+        pyRapid.contacts.get_contacts(
+            before="2023-01-02T00:00:00",
+            after="2023-01-01T00:00:00"
+            )
+
+        """
         params = {**kwargs}
-        request = "contacts.json"
+        url = "contacts.json"
 
-        responses = self._session.get(request, params=params)
+        contacts_generator = get_paginated(
+            client=self.client, url=url, **kwargs
+        )
 
-        r_n = [json_normalize(response, sep="_") for response in responses]
-        df = concat(r_n)
+        contacts_list: list[DataFrame] = [
+            json_normalize(response, sep="_")
+            for response in contacts_generator
+        ]
 
-        return df
+        try:
+            contacts = concat(contacts_list)
+        except ValueError:
+            contacts = DataFrame()
+
+        return contacts
