@@ -20,8 +20,6 @@ class Flows:
         pyRapid.flows.get_flows()
 
         """
-
-        params = {**kwargs}
         url = "flows.json"
 
         flows_generator = get_paginated(client=self.client, url=url, **kwargs)

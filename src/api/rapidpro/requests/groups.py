@@ -20,8 +20,6 @@ class Groups:
         pyRapid.groups.get_groups()
 
         """
-
-        params = {**kwargs}
         url = "groups.json"
 
         groups_generator = get_paginated(client=self.client, url=url, **kwargs)

@@ -23,7 +23,6 @@ class FlowStarts:
             )
 
         """
-        params = {**kwargs}
         url = "flow_starts.json"
 
         flowstarts_generator = get_paginated(

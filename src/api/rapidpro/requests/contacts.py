@@ -23,7 +23,6 @@ class Contacts:
             )
 
         """
-        params = {**kwargs}
         url = "contacts.json"
 
         contacts_generator = get_paginated(

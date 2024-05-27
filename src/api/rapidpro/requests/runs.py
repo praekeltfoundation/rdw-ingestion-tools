@@ -23,7 +23,6 @@ class Runs:
             )
 
         """
-        params = {**kwargs}
         url = "runs.json"
 
         runs_generator = get_paginated(client=self.client, url=url, **kwargs)

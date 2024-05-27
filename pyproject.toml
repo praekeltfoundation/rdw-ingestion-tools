@@ -20,6 +20,9 @@ black = "^24.4.2"
 isort = "^5.13.2"
 yamllint = "^1.35.1"
 ruff = "^0.4.4"
+attrs = "^23.2.0"
+httpx = "^0.27.0"
+mypy = "^1.10.0"
 
 
 [tool.poetry.group.types.dependencies]
@@ -33,9 +36,21 @@ build-backend = "poetry.core.masonry.api"
 line-length = 79
 
 [tool.mypy]
+exclude = [  # Regexes.
+    '^src/s3/',
+    '^src/api/aaq/',
+    '^src/api/content_repo/',
+    '^src/api/flow_results/',
+    '^src/api/survey/',
+    '^src/api/turn/',
+]
+files = "."
+
+follow_imports = "skip"
 ignore_missing_imports = false
-check_untyped_defs = true
+disallow_untyped_defs = true
 warn_unreachable = true
+
 
 [tool.pytest.ini_options]
 addopts = "--cov=src --cov-report=term-missing"

@@ -20,8 +20,6 @@ class Fields:
         pyRapid.fields.get_fields()
 
         """
-
-        params = {**kwargs}
         url = "fields.json"
 
         fields_generator = get_paginated(client=self.client, url=url, **kwargs)
