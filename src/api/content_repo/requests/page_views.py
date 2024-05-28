@@ -7,12 +7,18 @@ from .. import get_paginated
 
 @define
 class PageViews:
+    """Dedicated to the pageviews endpoint of the Content Repo API."""
 
     client: Client
 
     def get_pageviews(self, ts: str, max_pages: int = 5) -> DataFrame:
-        """
+        """Get a pandas DataFrame of pageviews.
+
         API only accepts initial timestamp and returns records after.
+        Example usage as follows:
+
+        start_time = datetime.strptime("2024-01-01", "%Y-%m-%d").isoformat()
+        pageviews = pyContent.pageviews.get_pageviews(ts=start_time)
 
         """
 

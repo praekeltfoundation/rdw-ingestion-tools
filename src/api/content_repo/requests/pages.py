@@ -7,12 +7,15 @@ from .. import get_paginated
 
 @define
 class Pages:
+    """Dedicated to the Pages endpoint of the Content Repo API"""
 
     client: Client
 
     def get_pages(self, max_pages: int = 5) -> DataFrame:
-        """
-        Returns content pages.
+        """Get a pandas DataFrame of Content Repo pages.
+
+        No time-based query parameters are supported by the endpoint.
+        Full set of pages accessible via pagination.
 
         """
 
