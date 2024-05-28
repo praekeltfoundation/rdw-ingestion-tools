@@ -1,6 +1,6 @@
-from urllib.parse import urljoin
+from collections.abc import Iterator
 
-from requests import Session
+from httpx import Client
 
 from .. import config_from_env
 
@@ -8,19 +8,32 @@ API_KEY = config_from_env("CONTENT_REPO_API_KEY")
 BASE_URL = config_from_env("CONTENT_REPO_BASE_URL")
 
 
-class Session(Session):
-    def __init__(self, url_base=None, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.url_base = url_base
+def get_paginated(
+    client: Client, url: str, max_pages: int, **kwargs: str | int
+) -> Iterator[dict]:
+    """Paginate over a Content Repo API endpoint."""
+    pages = 0
 
-    def request(self, method, url, **kwargs):
-        url = urljoin(self.url_base, url)
-        return super().request(method, url, **kwargs)
+    while pages < max_pages:
+        response = client.get(url, follow_redirects=True, params={**kwargs})
+        response.raise_for_status()
+
+        data: dict = response.json()
+
+        results: dict = data["results"]
+        yield from results
+
+        try:
+            url = data["next"]
+        except Exception as e:
+            raise (e)
+
+        pages += 1
 
 
-session = Session(url_base=BASE_URL)
-session.params = {}
-session.headers = {}
-session.headers = {"Authorization": f"Token {API_KEY}"}
+headers = {"Authorization": f"Token {API_KEY}"}
+
+client: Client = Client(base_url=BASE_URL, headers=headers)
+
 
 from .main import pyContent as pyContent
