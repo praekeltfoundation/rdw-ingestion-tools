@@ -6,4 +6,4 @@ fmt() {
     black "$@"
 }
 
-fmt src/
+fmt src/ examples/
