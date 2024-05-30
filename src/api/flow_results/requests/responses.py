@@ -18,7 +18,16 @@ class Responses:
         end_time: str,
         **kwargs: str | int,
     ) -> dict[str, list]:
-        """Returns a dict of responses"""
+        """Returns a dict of responses.
+
+        Supports time-based query parameters. For example:
+
+        pyFlows.responses.get_responses(
+            start_time="2024-05-29T00:00:00"
+            end_time="2024-05-30T00:00:00"
+          )
+
+        """
 
         filters = urlencode(
             {
