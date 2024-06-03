@@ -24,6 +24,8 @@ class Messages:
             end=end
             )
 
+        See examples/turn/messages.py.
+
         """
 
         url = "data/messages/cursor"

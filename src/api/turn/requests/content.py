@@ -1,22 +1,31 @@
-from pandas import json_normalize
+from attrs import define
+from httpx import Client
+from pandas import DataFrame, json_normalize
 
 
-def deep_get(obj, path):
-    if not path or not obj:
-        return obj
-    return deep_get(obj.get(path[0]), path[1:])
-
-
+@define
 class Content:
-    def __init__(self, session) -> None:
-        self._session = session
+    """Dedicated to the content export endpoint of the Turn Data Export API."""
 
-    def get_content(self, start, end):
+    client: Client
+
+    def get_content(self, **kwargs: str | int) -> DataFrame:
+        """Get a pandas DataFrame of content.
+
+        No time-based query parameters are supported by this endpoint.
+
+        pyTurn.content.get_content()
+
+        See examples/turn/content.py
+
+        """
         url = "export"
 
-        response = self._session.request("GET", url)
-        response.raise_for_status()
+        params = {**kwargs}
 
-        content = json_normalize(response.json()["data"])
+        content_response = self.client.get(url=url, params=params)
+        content_response.raise_for_status()
+
+        content = json_normalize(content_response.json()["data"])
 
         return content
