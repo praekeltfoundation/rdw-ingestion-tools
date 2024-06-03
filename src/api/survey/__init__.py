@@ -1,6 +1,6 @@
-from urllib.parse import urljoin
+from collections.abc import Iterator
 
-from requests import Session
+from httpx import Client
 
 from .. import config_from_env
 
@@ -8,19 +8,31 @@ API_KEY = config_from_env("SURVEY_API_KEY")
 BASE_URL = config_from_env("SURVEY_API_BASE_URL")
 
 
-class Session(Session):
-    def __init__(self, url_base=None, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.url_base = url_base
+def get_paginated(
+    client: Client, url: str, start: str, max_pages: int, **kwargs: str | int
+) -> Iterator[dict]:
+    """Paginates over the custom MQR Survey API endpoint."""
+    pages = 0
 
-    def request(self, method, url, **kwargs):
-        url = urljoin(self.url_base, url)
-        return super().request(method, url, **kwargs)
+    params = {"updated_at_gt": start, **kwargs}
+
+    while pages < max_pages:
+        response = client.get(url=url, params=params)
+        response.raise_for_status()
+
+        data: dict = response.json()["results"]
+        yield from data
+
+        url = response.json()["next"]
+
+        if not url:
+            break
+
+        pages += 1
 
 
-session = Session(url_base=BASE_URL)
-session.params = {}
-session.headers = {}
-session.headers = {"Authorization": f"Token {API_KEY}"}
+headers = {"Authorization": f"Token {API_KEY}"}
+
+client: Client = Client(base_url=BASE_URL, headers=headers)
 
 from .main import pySurvey as pySurvey

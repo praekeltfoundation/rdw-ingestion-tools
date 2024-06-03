@@ -1,39 +1,37 @@
-from pandas import concat, json_normalize
+from attrs import define
+from httpx import Client
+from pandas import DataFrame, concat, json_normalize
+
+from .. import get_paginated
 
 
+@define
 class MQR:
-    def __init__(self, session):
-        self._session = session
+    """Dedicated to the baseline endpoint of the MQR custom survey API."""
 
-    def get_baseline(self, ts, max_pages=5):
+    client: Client
+
+    def get_baseline(self, ts: str, max_pages: int = 5) -> DataFrame:
         """
         API only accepts initial timestamp and returns records after.
 
+        pySurvey.mqr.get_baseline(ts=start)
+
         """
 
-        url = "mqrbaselinesurvey/?updated_at_gt=" + ts
+        url = "mqrbaselinesurvey/"
 
-        response = self._session.request("GET", url)
+        baseline_generator = get_paginated(
+            self.client, url=url, start=ts, max_pages=max_pages
+        )
 
-        response.raise_for_status()
-        response = response.json()
+        baseline_responses = []
+        for item in baseline_generator:
+            baseline_responses.append(json_normalize(item, sep="_"))
 
-        next_page = response["next"]
-        response_list = [response]
-
-        pages = 0
-        while next_page and pages < max_pages:
-            response = self._session.request("GET", next_page).json()
-            next_page = response["next"]
-            try:
-                response_list.append(response)
-            except NameError:
-                response_list = [response]
-            pages += 1
-
-        baseline = []
-        for item in response_list:
-            baseline.append(json_normalize(item["results"], sep="_"))
-        baseline = concat(baseline)
+        try:
+            baseline = concat(baseline_responses)
+        except ValueError:
+            baseline = DataFrame()
 
         return baseline
