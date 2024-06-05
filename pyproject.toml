@@ -41,7 +41,7 @@ exclude = [  # Regexes.
     '^src/s3/',
     '^src/api/content_repo/',
     '^src/api/flow_results/',
-    '^src/api/rapidpro/',
+    '^src/api/aaq/',
     '^src/api/survey/',
     '^src/api/turn/',
 ]
