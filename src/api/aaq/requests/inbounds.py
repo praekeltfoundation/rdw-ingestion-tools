@@ -8,7 +8,7 @@ from pandas import DataFrame
 from .. import get_paginated
 
 
-class FAQRank(TypedDict):
+class FAQModel(TypedDict):
     faq_title: str
     overall_score: str
     rank: str | None
@@ -16,9 +16,15 @@ class FAQRank(TypedDict):
     tag_cs: str | None
 
 
+class FAQRank(TypedDict):
+    faq_id: str
+    score: str
+    rank: str | None
+
+
 def build_faqranks(
-    model_scoring_dict: dict[str, str | FAQRank]
-) -> Iterator[dict]:
+    model_scoring_dict: dict[str, str | FAQModel]
+) -> Iterator[FAQRank]:
     """Extracts important information from the AAQ model scoring dict.
 
     Each inbound message contains a dict that contains the model scores
