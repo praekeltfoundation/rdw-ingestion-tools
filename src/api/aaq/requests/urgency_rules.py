@@ -20,12 +20,6 @@ class UrgencyRules:
         """Get a pandas DataFrame of urgency rules."""
         url = "urgency_rules"
 
-        """
-        See faqmatches.py for context on usage of defaults.
-
-        """
-        urgency_rules_generator = get_paginated(
-            client=self.client, url=url, limit=100, offset=0, **kwargs
-        )
+        urgency_rules_generator = get_paginated(self.client, url, **kwargs)
 
         return DataFrame(urgency_rules_generator)

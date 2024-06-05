@@ -22,13 +22,6 @@ class FAQMatches:
 
         url = "faqmatches"
 
-        """
-        Open issue in mypy means we need to set defaults here to stop
-        mypy from complaining: https://github.com/python/mypy/issues/1969
-
-        """
-        faqmatches_generator = get_paginated(
-            client=self.client, url=url, limit=100, offset=0, **kwargs
-        )
+        faqmatches_generator = get_paginated(self.client, url, **kwargs)
 
         return DataFrame(faqmatches_generator)

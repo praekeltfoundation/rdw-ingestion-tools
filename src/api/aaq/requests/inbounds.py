@@ -63,13 +63,7 @@ class Inbounds:
         """
         url = "inbounds"
 
-        """
-        See faqmatches.py for context on usage of defaults.
-
-        """
-        inbounds_generator = get_paginated(
-            client=self.client, url=url, limit=100, offset=0, **kwargs
-        )
+        inbounds_generator = get_paginated(self.client, url, **kwargs)
 
         return DataFrame(inbounds_generator)
 
@@ -88,7 +82,7 @@ class Inbounds:
         inbounds = self.get_inbounds(**kwargs)
 
         faq_ranks_list = []
-        for _, row in inbounds.iterrows():
+        for _idx, row in inbounds.iterrows():
             for faqrank in build_faqranks(dict(row["model_scoring"])):
                 faq_ranks_list.append(
                     {"inbound_id": row["inbound_id"], **faqrank}

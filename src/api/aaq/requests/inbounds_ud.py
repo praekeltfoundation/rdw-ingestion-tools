@@ -31,12 +31,6 @@ class InboundsUD:
 
         url = "inbounds_ud"
 
-        """
-        See faqmatches.py for context on usage of defaults.
-
-        """
-        inbounds_ud_generator = get_paginated(
-            client=self.client, url=url, limit=100, offset=0, **kwargs
-        )
+        inbounds_ud_generator = get_paginated(self.client, url, **kwargs)
 
         return DataFrame(inbounds_ud_generator)

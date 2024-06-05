@@ -11,11 +11,12 @@ BASE_URL = config_from_env("AAQ_API_BASE_URL")
 def get_paginated(
     client: Client,
     url: str,
-    limit: int = 100,
-    offset: int = 0,
     **kwargs: str | int,
 ) -> Iterator[dict]:
     """Paginate over pages in an AAQ endpoint up to a limit."""
+
+    limit: int = 100
+    offset: int = 0
 
     params = {"offset": offset, "limit": limit}
 
