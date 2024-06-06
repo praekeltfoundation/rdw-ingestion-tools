@@ -53,7 +53,7 @@ class Responses:
         for id in id_generator:
             url = f"{id}/responses/" + "?" + filters
 
-            response_generator = get_paginated(self.client, url=url)
+            response_generator = get_paginated(self.client, url)
 
             responses["flow_id"].extend([r[0] for r in response_generator])
             responses["timestamp"].extend([r[1] for r in response_generator])
