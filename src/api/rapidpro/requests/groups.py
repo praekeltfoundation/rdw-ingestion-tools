@@ -22,7 +22,7 @@ class Groups:
         """
         url = "groups.json"
 
-        groups_generator = get_paginated(client=self.client, url=url, **kwargs)
+        groups_generator = get_paginated(self.client, url, **kwargs)
 
         groups_list: list[DataFrame] = [
             json_normalize(response, sep="_") for response in groups_generator

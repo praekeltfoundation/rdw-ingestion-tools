@@ -22,7 +22,7 @@ class Flows:
         """
         url = "flows.json"
 
-        flows_generator = get_paginated(client=self.client, url=url, **kwargs)
+        flows_generator = get_paginated(self.client, url, **kwargs)
 
         flows_list: list[DataFrame] = [
             json_normalize(response, sep="_") for response in flows_generator

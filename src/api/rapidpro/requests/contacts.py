@@ -25,9 +25,7 @@ class Contacts:
         """
         url = "contacts.json"
 
-        contacts_generator = get_paginated(
-            client=self.client, url=url, **kwargs
-        )
+        contacts_generator = get_paginated(self.client, url, **kwargs)
 
         contacts_list: list[DataFrame] = [
             json_normalize(response, sep="_")

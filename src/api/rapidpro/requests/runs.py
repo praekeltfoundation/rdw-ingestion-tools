@@ -25,7 +25,7 @@ class Runs:
         """
         url = "runs.json"
 
-        runs_generator = get_paginated(client=self.client, url=url, **kwargs)
+        runs_generator = get_paginated(self.client, url, **kwargs)
 
         runs_list: list[DataFrame] = [
             json_normalize(response, sep="_") for response in runs_generator

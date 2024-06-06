@@ -22,7 +22,7 @@ class Fields:
         """
         url = "fields.json"
 
-        fields_generator = get_paginated(client=self.client, url=url, **kwargs)
+        fields_generator = get_paginated(self.client, url, **kwargs)
 
         fields_list: list[DataFrame] = [
             json_normalize(response, sep="_") for response in fields_generator

@@ -25,9 +25,7 @@ class FlowStarts:
         """
         url = "flow_starts.json"
 
-        flowstarts_generator = get_paginated(
-            client=self.client, url=url, **kwargs
-        )
+        flowstarts_generator = get_paginated(self.client, url, **kwargs)
 
         flowstarts_list: list[DataFrame] = [
             json_normalize(response, sep="_")
