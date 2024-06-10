@@ -1,17 +1,36 @@
-from pandas import concat, json_normalize
+from attrs import define
+from httpx import Client
+from pandas import DataFrame, concat, json_normalize
+
+from .. import get_paginated
 
 
+@define
 class Fields:
-    def __init__(self, session):
-        self._session = session
+    """Dedicated to the fields endpoint of the Rapidpro API"""
 
-    def get_fields(self, **kwargs):
-        params = {**kwargs}
-        request = "fields.json"
+    client: Client
 
-        responses = self._session.get(request, params=params)
+    def get_fields(self, **kwargs: str | int) -> DataFrame:
+        """Get a pandas DataFrame of Rapidpro fields.
 
-        r_n = [json_normalize(response, sep="_") for response in responses]
-        df = concat(r_n)
+        This endpoint does not support time-based filtering and
+        can be called as:
 
-        return df
+        pyRapid.fields.get_fields()
+
+        """
+        url = "fields.json"
+
+        fields_generator = get_paginated(self.client, url, **kwargs)
+
+        fields_list: list[DataFrame] = [
+            json_normalize(response, sep="_") for response in fields_generator
+        ]
+
+        try:
+            fields = concat(fields_list)
+        except ValueError:
+            fields = DataFrame()
+
+        return fields
