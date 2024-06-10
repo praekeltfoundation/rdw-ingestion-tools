@@ -5,15 +5,15 @@ from api.rapidpro.requests.flows import Flows
 from api.rapidpro.requests.groups import Groups
 from api.rapidpro.requests.runs import Runs
 
-from . import session
+from . import client
 
 
 class pyRapid:
-    """ """
+    """A wrapper class for the various Rapidpro endpoints."""
 
-    contacts = Contacts(session)
-    fields = Fields(session)
-    flow_starts = FlowStarts(session)
-    flows = Flows(session)
-    groups = Groups(session)
-    runs = Runs(session)
+    contacts = Contacts(client)
+    fields = Fields(client)
+    flow_starts = FlowStarts(client)
+    flows = Flows(client)
+    groups = Groups(client)
+    runs = Runs(client)

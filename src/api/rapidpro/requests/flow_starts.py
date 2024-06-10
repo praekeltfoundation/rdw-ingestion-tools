@@ -1,17 +1,40 @@
-from pandas import concat, json_normalize
+from attrs import define
+from httpx import Client
+from pandas import DataFrame, concat, json_normalize
+
+from .. import get_paginated
 
 
+@define
 class FlowStarts:
-    def __init__(self, session):
-        self._session = session
+    """Dedicated to the flowstarts endpoint of the Rapidpro API"""
 
-    def get_flowstarts(self, **kwargs):
-        params = {**kwargs}
-        request = "flow_starts.json"
+    client: Client
 
-        responses = self._session.get(request, params=params)
+    def get_flowstarts(self, **kwargs: str | int) -> DataFrame:
+        """Get a pandas DataFrame of Rapidpro flowstarts.
 
-        r_n = [json_normalize(response, sep="_") for response in responses]
-        df = concat(r_n)
+        This endpoint supports time-based filtering that allows
+        to fetch results between two date parameters. Example:
 
-        return df
+        pyRapid.flowstarts.get_flowstarts(
+            before="2023-01-02T00:00:00",
+            after="2023-01-01T00:00:00"
+            )
+
+        """
+        url = "flow_starts.json"
+
+        flowstarts_generator = get_paginated(self.client, url, **kwargs)
+
+        flowstarts_list: list[DataFrame] = [
+            json_normalize(response, sep="_")
+            for response in flowstarts_generator
+        ]
+
+        try:
+            flowstarts = concat(flowstarts_list)
+        except ValueError:
+            flowstarts = DataFrame()
+
+        return flowstarts
