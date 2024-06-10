@@ -1,27 +1,25 @@
-from pandas import DataFrame, concat
+from attrs import define
+from httpx import Client
+from pandas import DataFrame
+
+from .. import get_paginated
 
 
+@define
 class UrgencyRules:
-    def __init__(self, session) -> None:
-        self._session = session
+    """Dedicated to the urgency rules endpoint of the AAQ Data Export API.
 
-    def get_urgency_rules(self, **kwargs):
+    This allows us to retrieve different urgency rules that are implemented
+    for a given AAQ instance.
+
+    """
+
+    client: Client
+
+    def get_urgency_rules(self, **kwargs: str | int) -> DataFrame:
+        """Get a pandas DataFrame of urgency rules."""
         url = "urgency_rules"
 
-        response_list = self._session.get(url, **kwargs)
+        urgency_rules_generator = get_paginated(self.client, url, **kwargs)
 
-        response_list = [
-            {key: str(d[key]) for key in d} for d in response_list
-        ]
-
-        try:
-            urgency_rules = concat(
-                [DataFrame(d, index=[0]) for d in response_list]
-            )
-        except ValueError as e:
-            if str(e) != "No objects to concatenate":
-                raise
-            else:
-                urgency_rules = DataFrame()
-
-        return urgency_rules
+        return DataFrame(urgency_rules_generator)

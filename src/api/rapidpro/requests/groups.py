@@ -1,17 +1,36 @@
-from pandas import concat, json_normalize
+from attrs import define
+from httpx import Client
+from pandas import DataFrame, concat, json_normalize
+
+from .. import get_paginated
 
 
+@define
 class Groups:
-    def __init__(self, session):
-        self._session = session
+    """Dedicated to the groups endpoint of the Rapidpro API"""
 
-    def get_groups(self, **kwargs):
-        params = {**kwargs}
-        request = "groups.json"
+    client: Client
 
-        responses = self._session.get(request, params=params)
+    def get_groups(self, **kwargs: str | int) -> DataFrame:
+        """Get a pandas DataFrame of Rapidpro groups.
 
-        r_n = [json_normalize(response, sep="_") for response in responses]
-        df = concat(r_n)
+        This endpoint does not support time-based filtering and
+        can be called as:
 
-        return df
+        pyRapid.groups.get_groups()
+
+        """
+        url = "groups.json"
+
+        groups_generator = get_paginated(self.client, url, **kwargs)
+
+        groups_list: list[DataFrame] = [
+            json_normalize(response, sep="_") for response in groups_generator
+        ]
+
+        try:
+            groups = concat(groups_list)
+        except ValueError:
+            groups = DataFrame()
+
+        return groups

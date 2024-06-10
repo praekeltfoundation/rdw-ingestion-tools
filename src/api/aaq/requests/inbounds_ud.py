@@ -1,27 +1,36 @@
-from pandas import DataFrame, concat
+from attrs import define
+from httpx import Client
+from pandas import DataFrame
+
+from .. import get_paginated
 
 
+@define
 class InboundsUD:
-    def __init__(self, session) -> None:
-        self._session = session
+    """Dedicated to the inbounds_ud endpoint of the AAQ Data Export API.
 
-    def get_inbounds_ud(self, **kwargs):
+    This allows us to retrieve data on urgency detection rules associated
+    with different inbound messages.
+
+    """
+
+    client: Client
+
+    def get_inbounds_ud(self, **kwargs: str | int) -> DataFrame:
+        """Get inbounds from the urgency detection endpoint.
+
+        This endpoint supports time-based query parameters which can be
+        passed to this method as kwargs as in the following example:
+
+        pyAAQ.inbounds.get_inbounds_ud(
+           start_datetime="2020-01-01 00:00:00",
+           end_datetime="2020-12-31 00:00:00"
+           )
+
+        """
+
         url = "inbounds_ud"
 
-        response_list = self._session.get(url, **kwargs)
+        inbounds_ud_generator = get_paginated(self.client, url, **kwargs)
 
-        response_list = [
-            {key: str(d[key]) for key in d} for d in response_list
-        ]
-
-        try:
-            inbounds_ud = concat(
-                [DataFrame(d, index=[0]) for d in response_list]
-            )
-        except ValueError as e:
-            if str(e) != "No objects to concatenate":
-                raise
-            else:
-                inbounds_ud = DataFrame()
-
-        return inbounds_ud
+        return DataFrame(inbounds_ud_generator)
