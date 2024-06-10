@@ -1,6 +1,6 @@
-from urllib.parse import urljoin
+from collections.abc import Iterator
 
-from requests import Session
+from httpx import Client
 
 from .. import config_from_env
 
@@ -8,48 +8,36 @@ API_KEY = config_from_env("RAPIDPRO_API_KEY")
 BASE_URL = config_from_env("RAPIDPRO_API_BASE_URL")
 
 
-class Session(Session):
-    def __init__(self, url_base=None, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.url_base = url_base
+def get_paginated(
+    client: Client,
+    url: str,
+    **kwargs: str | int,
+) -> Iterator[dict]:
+    """Paginate over a Rapidpro API endpoint.
 
-    def request(self, method, url, **kwargs):
-        url = urljoin(self.url_base, url)
-        return super().request(method, url, **kwargs)
+    The Rapidpro API returns a next token with each response until no further
+    pages are left to return.
 
-    def get(self, url, **kwargs):
-        response = self.request(method="GET", url=url, **kwargs)
+    """
+
+    while True:
+        response = client.get(url, params={**kwargs})
         response.raise_for_status()
-        response_list = []
-        if response.ok:
-            r = response.json()
-            response_list.append(r["results"])
-            try:
-                next = r["next"]
-            except KeyError:
-                next = False
-            while next:
-                response = self.request(
-                    method="GET", url=next.split("/v2/")[1]
-                )
-                if response.ok:
-                    r = response.json()
-                    response_list.append(r["results"])
-                    try:
-                        print(r["next"])
-                        next = r["next"]
-                    except KeyError:
-                        next = False
-                else:
-                    raise Exception(
-                        "Pagination response was not ok for request:", next
-                    )
-        return response_list
+
+        data: dict = response.json()
+
+        results: list = data["results"]
+        yield from results
+
+        try:
+            url = data["next"].split("/v2/")[1]
+        except AttributeError:
+            break
 
 
-session = Session(url_base=BASE_URL)
-session.params = {}
-session.headers = {}
-session.headers = {"Authorization": f"Token {API_KEY}"}
+headers = {"Authorization": f"Token {API_KEY}"}
+
+client: Client = Client(base_url=BASE_URL, headers=headers)
+
 
 from .main import pyRapid as pyRapid
