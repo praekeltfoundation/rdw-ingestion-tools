@@ -1,9 +1,9 @@
 from api.survey.requests.mqr import MQR
 
-from . import session
+from . import client
 
 
 class pySurvey:
     """ """
 
-    mqr = MQR(session)
+    mqr = MQR(client)
