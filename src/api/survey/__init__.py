@@ -16,7 +16,7 @@ def get_paginated(
 
     params = {"updated_at_gt": start, **kwargs}
 
-    while pages < max_pages:
+    while url and pages < max_pages:
         response = client.get(url=url, params=params)
         response.raise_for_status()
 
@@ -24,9 +24,6 @@ def get_paginated(
         yield from data
 
         url = response.json()["next"]
-
-        if not url:
-            break
 
         pages += 1
 

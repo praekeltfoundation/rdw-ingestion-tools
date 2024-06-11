@@ -22,7 +22,7 @@ class MQR:
         url = "mqrbaselinesurvey/"
 
         baseline_generator = get_paginated(
-            client=self.client, url=url, start=ts, max_pages=max_pages
+            self.client, url, start=ts, max_pages=max_pages
         )
 
         baseline_responses = []
