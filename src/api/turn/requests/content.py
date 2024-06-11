@@ -23,7 +23,7 @@ class Content:
 
         params = {**kwargs}
 
-        content_response = self.client.get(url=url, params=params)
+        content_response = self.client.get(url, params=params)
         content_response.raise_for_status()
 
         content = json_normalize(content_response.json()["data"])

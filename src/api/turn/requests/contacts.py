@@ -29,10 +29,10 @@ class Contacts:
         pedantic on such issues).
 
         """
-        url = "data/contacts/cursor"
+        url = "data/contacts"
 
         contacts_generator = get_paginated(
-            client=self.client, url=url, start=start, end=end, **kwargs
+            self.client, url, start=start, end=end, **kwargs
         )
 
         try:

@@ -28,10 +28,10 @@ class Messages:
 
         """
 
-        url = "data/messages/cursor"
+        url = "data/messages"
 
         messages_generator = get_paginated(
-            client=self.client, url=url, start=start, end=end, **kwargs
+            self.client, url, start=start, end=end, **kwargs
         )
 
         contacts, inbound_messages, outbound_messages = [], [], []

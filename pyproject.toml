@@ -39,7 +39,6 @@ line-length = 79
 [tool.mypy]
 exclude = [  # Regexes.
     '^src/s3/',
-    '^examples/',
     '^src/api/content_repo/',
     '^src/api/flow_results/',
     '^src/api/survey/',

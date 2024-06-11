@@ -17,6 +17,7 @@ def get_paginated(
     use this to page through the data the API returns.
 
     """
+    url = f"{url}/cursor"
 
     data = {"from": start, "until": end}
 
@@ -26,14 +27,16 @@ def get_paginated(
     cursor = cursor_response.json()["cursor"]
 
     while True:
-        response = client.get(url + f"/{cursor}")
+        response = client.get(f"{url}/{cursor}")
         response.raise_for_status()
 
-        response_data: dict = response.json()["data"]
+        response_json: dict = response.json()
+
+        response_data: dict = response_json["data"]
         yield from response_data
 
         try:
-            cursor = response.json()["paging"]["next"]
+            cursor = response.json["paging"]["next"]
         except TypeError:
             break
 
