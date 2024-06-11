@@ -1,41 +1,43 @@
+from attrs import define
+from httpx import Client
 from pandas import DataFrame, concat, json_normalize
 
-
-def deep_get(obj, path):
-    if not path or not obj:
-        return obj
-    return deep_get(obj.get(path[0]), path[1:])
+from .. import get_paginated
 
 
+@define
 class Contacts:
-    def __init__(self, session):
-        self._session = session
+    """Dedicated to the contacts endpoint of the Turn Data Export API."""
 
-    def get_contacts(self, start, end) -> DataFrame:
-        url = "data/contacts/cursor"
+    client: Client
 
-        data = {"from": start, "until": end}
+    def get_contacts(
+        self, start: str, end: str, **kwargs: str | int
+    ) -> DataFrame:
+        """Returns a pandas DataFrame of Turn Contacts.
 
-        cursor_request = self._session.request("POST", url, json=data)
+        The endpoint supports time-base query parameters and
+        can be called as:
 
-        cursor_request.raise_for_status()
-        cursor = cursor_request.json()["cursor"]
+        pyTurn.contacts.get_contacts(
+            start=start,
+            end=end
+            )
 
-        response_list = []
-        i = 0
-        while cursor:
-            i += 1
-            print("Iteration #: ", i)
-            response = self._session.request("GET", url + f"/{cursor}")
-            response.raise_for_status()
-            for row in response.json()["data"]:
-                response_list.append(row)
+        See examples/turn/contacts.py for information on
+        timestamp formatting. (The Turn Data Export API is
+        pedantic on such issues).
 
-            cursor = deep_get(response.json(), ["paging", "next"])
+        """
+        url = "data/contacts"
+
+        contacts_generator = get_paginated(
+            self.client, url, start=start, end=end, **kwargs
+        )
 
         try:
             contacts = concat(
-                [json_normalize(obj, sep="_") for obj in response_list]
+                [json_normalize(obj, sep="_") for obj in contacts_generator]
             )
         except ValueError:
             contacts = DataFrame()

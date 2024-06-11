@@ -40,7 +40,6 @@ line-length = 79
 # Run mypy . --explicit-package-bases. We use py.typed.
 exclude = [  # Regexes.
     '^src/s3/',
-    '^src/api/turn/',
 ]
 files = "."
 
