@@ -1,6 +1,6 @@
-from urllib.parse import urljoin
+from collections.abc import Iterator
 
-from requests import Session
+from httpx import Client
 
 from .. import config_from_env
 
@@ -8,19 +8,52 @@ API_KEY = config_from_env("FLOW_RESULTS_API_KEY")
 BASE_URL = config_from_env("FLOW_RESULTS_API_BASE_URL")
 
 
-class Session(Session):
-    def __init__(self, url_base=None, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.url_base = url_base
+def get_ids(client: Client, **kwargs: str | int) -> Iterator[str]:
+    """Returns a list of flow id's.
 
-    def request(self, method, url, **kwargs):
-        url = urljoin(self.url_base, url)
-        return super().request(method, url, **kwargs)
+    These id's are required in order to get responses from the Flow
+    Results API.
+
+    """
+
+    params = {**kwargs}
+    url = ""
+
+    response = client.get(url, params=params)
+    response.raise_for_status()
+
+    for flow in response.json()["data"]:
+        yield flow["id"]
 
 
-session = Session(url_base=BASE_URL)
-session.params = {}
-session.headers = {}
-session.headers = {"Authorization": f"Token {API_KEY}"}
+def get_paginated(
+    client: Client, url: str, **kwargs: str | int
+) -> Iterator[list]:
+    """Paginate over the Flow Results Responses Endpoint.
+
+    Each response returns a next link which is followed until
+    the full result set is returned.
+
+    """
+
+    while True:
+        response = client.get(url, params={**kwargs})
+        response.raise_for_status()
+
+        data: dict = response.json()["data"]
+
+        results: list = data["attributes"]["responses"]
+        yield from results
+
+        try:
+            full_url = data["relationships"]["links"]["next"]
+            url = full_url.split("packages/")[-1]
+        except AttributeError:
+            break
+
+
+headers = {"Authorization": f"Token {API_KEY}"}
+
+client: Client = Client(base_url=BASE_URL, headers=headers)
 
 from .main import pyFlows as pyFlows

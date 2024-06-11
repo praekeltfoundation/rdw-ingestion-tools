@@ -1,34 +1,26 @@
+from attrs import define
+from httpx import Client
+
+from .. import get_ids
+
+
+@define
 class Flows:
-    def __init__(self, session):
-        self._session = session
+    """Dedicated to the Flows endpoint of the Flow Results API"""
 
-    def get_ids(self, **kwargs):
-        params = {**kwargs}
+    client: Client
 
-        request = ""
+    def get_flows(self, **kwargs: str | int) -> dict[str, dict]:
+        """Returns a dict of question and flow data - each returned as a
+        nested dict.
 
-        response = self._session.get(request, params=params)
-        response.raise_for_status()
-
-        ids = [flow["id"] for flow in response.json()["data"]]
-
-        return ids
-
-    def get(self, **kwargs):
-        ids = self.get_ids()
+        """
 
         params = {**kwargs}
 
-        flows = []
-        for id in ids:
-            request = id
-            response = self._session.get(request, params=params)
-            if response.ok:
-                flows.append(response.json())
-            else:
-                pass
+        id_generator = get_ids(self.client)
 
-        f_data = {
+        flows: dict[str, list] = {
             "id": [],
             "name": [],
             "version": [],
@@ -38,22 +30,7 @@ class Flows:
             "language": [],
         }
 
-        for flow in flows:
-            f_data["id"].append(flow["data"]["id"])
-            f_data["name"].append(flow["data"]["attributes"]["name"])
-            f_data["version"].append(
-                flow["data"]["attributes"]["flow-results-specification"]
-            )
-            f_data["created"].append(flow["data"]["attributes"]["created"])
-            f_data["modified"].append(flow["data"]["attributes"]["modified"])
-            f_data["title"].append(flow["data"]["attributes"]["title"])
-            f_data["language"].append(
-                flow["data"]["attributes"]["resources"][0]["schema"][
-                    "language"
-                ]
-            )
-
-        q_data = {
+        questions: dict[str, list] = {
             "flow_id": [],
             "id": [],
             "type": [],
@@ -61,18 +38,34 @@ class Flows:
             "type_options": [],
         }
 
-        questions = [
-            flow["data"]["attributes"]["resources"][0]["schema"]["questions"]
-            for flow in flows
-        ]
+        for id in id_generator:
+            url = id
+            response = self.client.get(
+                url, params=params, follow_redirects=True
+            )
+            response.raise_for_status()
 
-        for question, flow_id in zip(questions, ids, strict=True):
-            id = flow_id
-            for key in list(question.keys()):
-                q_data["flow_id"].append(id)
-                q_data["id"].append(key)
-                q_data["type"].append(question[key]["type"])
-                q_data["label"].append(question[key]["label"])
-                q_data["type_options"].append(question[key]["type_options"])
+            attrs = response.json()["data"]["attributes"]
 
-        return {"flows": f_data, "questions": q_data}
+            flows["id"].append(response.json()["data"]["id"])
+            flows["name"].append(attrs["name"])
+            flows["version"].append(attrs["flow-results-specification"])
+            flows["created"].append(attrs["created"])
+            flows["modified"].append(attrs["modified"])
+            flows["title"].append(attrs["title"])
+            flows["language"].append(
+                attrs["resources"][0]["schema"]["language"]
+            )
+
+            questions_response = attrs["resources"][0]["schema"]["questions"]
+
+            for key in list(questions_response.keys()):
+                questions["flow_id"].append(id)
+                questions["id"].append(key)
+                questions["type"].append(questions_response[key]["type"])
+                questions["label"].append(questions_response[key]["label"])
+                questions["type_options"].append(
+                    questions_response[key]["type_options"]
+                )
+
+        return {"flows": flows, "questions": questions}
