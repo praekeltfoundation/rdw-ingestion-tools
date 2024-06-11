@@ -14,7 +14,7 @@ def get_paginated(
     """Paginate over a Content Repo API endpoint."""
     pages = 0
 
-    while pages < max_pages:
+    while url and pages < max_pages:
         response = client.get(url, follow_redirects=True, params={**kwargs})
         response.raise_for_status()
 
@@ -23,10 +23,7 @@ def get_paginated(
         results: dict = data["results"]
         yield from results
 
-        try:
-            url = data["next"]
-        except Exception as e:
-            raise (e)
+        url = data["next"]
 
         pages += 1
 
