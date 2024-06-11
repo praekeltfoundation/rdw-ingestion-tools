@@ -45,19 +45,19 @@ class Flows:
             )
             response.raise_for_status()
 
-            _attrs = response.json()["data"]["attributes"]
+            attrs = response.json()["data"]["attributes"]
 
             flows["id"].append(response.json()["data"]["id"])
-            flows["name"].append(_attrs["name"])
-            flows["version"].append(_attrs["flow-results-specification"])
-            flows["created"].append(_attrs["created"])
-            flows["modified"].append(_attrs["modified"])
-            flows["title"].append(_attrs["title"])
+            flows["name"].append(attrs["name"])
+            flows["version"].append(attrs["flow-results-specification"])
+            flows["created"].append(attrs["created"])
+            flows["modified"].append(attrs["modified"])
+            flows["title"].append(attrs["title"])
             flows["language"].append(
-                _attrs["resources"][0]["schema"]["language"]
+                attrs["resources"][0]["schema"]["language"]
             )
 
-            questions_response = _attrs["resources"][0]["schema"]["questions"]
+            questions_response = attrs["resources"][0]["schema"]["questions"]
 
             for key in list(questions_response.keys()):
                 questions["flow_id"].append(id)

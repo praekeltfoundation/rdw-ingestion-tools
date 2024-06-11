@@ -27,9 +27,7 @@ def get_ids(client: Client, **kwargs: str | int) -> Iterator[str]:
 
 
 def get_paginated(
-    client: Client,
-    url: str,
-    **kwargs: str | int,
+    client: Client, url: str, **kwargs: str | int
 ) -> Iterator[list]:
     """Paginate over the Flow Results Responses Endpoint.
 
@@ -42,15 +40,14 @@ def get_paginated(
         response = client.get(url, params={**kwargs})
         response.raise_for_status()
 
-        data: dict = response.json()
+        data: dict = response.json()["data"]
 
-        results: list = data["data"]["attributes"]["responses"]
+        results: list = data["attributes"]["responses"]
         yield from results
 
         try:
-            url = data["data"]["relationships"]["links"]["next"].split(
-                "packages/"
-            )[-1]
+            full_url = data["relationships"]["links"]["next"]
+            url = full_url.split("packages/")[-1]
         except AttributeError:
             break
 

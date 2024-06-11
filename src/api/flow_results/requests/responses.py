@@ -29,14 +29,6 @@ class Responses:
 
         """
 
-        filters = urlencode(
-            {
-                "filter[start-timestamp]": start_time,
-                "filter[end-timestamp]": end_time,
-                **kwargs,
-            }
-        )
-
         id_generator = get_ids(self.client)
 
         responses: dict[str, list] = {
@@ -50,8 +42,16 @@ class Responses:
             "response_metadata": [],
         }
 
+        filters = urlencode(
+            {
+                "filter[start-timestamp]": start_time,
+                "filter[end-timestamp]": end_time,
+                **kwargs,
+            }
+        )
+
         for id in id_generator:
-            url = f"{id}/responses/" + "?" + filters
+            url = f"{id}/responses/?{filters}"
 
             response_generator = get_paginated(self.client, url)
 
