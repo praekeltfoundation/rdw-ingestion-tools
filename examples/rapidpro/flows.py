@@ -1,5 +1,5 @@
 from api.rapidpro import pyRapid
 
-df = pyRapid.flows.get_flows()
+flows = pyRapid.flows.get_flows()
 
-df.head(5)
+flows.head(5)
