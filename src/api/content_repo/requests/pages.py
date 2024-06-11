@@ -1,39 +1,39 @@
-from pandas import concat, json_normalize
+from attrs import define
+from httpx import Client
+from pandas import DataFrame, concat, json_normalize
+
+from .. import get_paginated
 
 
+@define
 class Pages:
-    def __init__(self, session):
-        self._session = session
+    """Dedicated to the Pages endpoint of the Content Repo API"""
 
-    def get_pages(self, page=None):
-        """
-        Returns content pages.
+    client: Client
+
+    def get_pages(self, max_pages: int = 5) -> DataFrame:
+        """Get a pandas DataFrame of Content Repo pages.
+
+        No time-based query parameters are supported by the endpoint.
+        Full set of pages accessible via pagination.
 
         """
 
         url = "pages"
 
-        if not page:
-            response = self._session.request("GET", url)
-            response.raise_for_status()
-            response = response.json()
-            next_page = response["next"]
-            response_list = [response]
-        else:
-            next_page = page
+        pages_generator = get_paginated(
+            client=self.client,
+            url=url,
+            max_pages=max_pages,
+        )
 
-        while next_page:
-            print("Retrieving pages for page: ", next_page)
-            response = self._session.request("GET", next_page).json()
-            next_page = response["next"]
-            try:
-                response_list.append(response)
-            except NameError:
-                response_list = [response]
+        pages_list: list[DataFrame] = [
+            json_normalize(response, sep="_") for response in pages_generator
+        ]
 
-        pages = []
-        for item in response_list:
-            pages.append(json_normalize(item["results"], sep="_"))
-        pages = concat(pages)
+        try:
+            pages = concat(pages_list)
+        except ValueError:
+            pages = DataFrame()
 
-        return {"pages": pages}
+        return pages

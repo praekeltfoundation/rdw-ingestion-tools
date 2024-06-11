@@ -1,42 +1,41 @@
-from pandas import concat, json_normalize
+from attrs import define
+from httpx import Client
+from pandas import DataFrame, concat, json_normalize
+
+from .. import get_paginated
 
 
+@define
 class PageViews:
-    def __init__(self, session):
-        self._session = session
+    """Dedicated to the pageviews endpoint of the Content Repo API."""
 
-    def get_pageviews(self, ts, max_pages=5, page=None):
-        """
+    client: Client
+
+    def get_pageviews(self, ts: str, max_pages: int = 5) -> DataFrame:
+        """Get a pandas DataFrame of pageviews.
+
         API only accepts initial timestamp and returns records after.
+        Example usage as follows:
+
+        start_time = datetime(2024, 1, 1).isoformat()
+        pageviews = pyContent.pageviews.get_pageviews(ts=start_time)
 
         """
 
-        url = "custom/pageviews/?timestamp_gt=" + ts
+        url = f"custom/pageviews/?timestamp_gt={ts}"
 
-        if not page:
-            response = self._session.request("GET", url)
-            response.raise_for_status()
-            response = response.json()
-            next_page = response["next"]
-            response_list = [response]
-        else:
-            next_page = page
+        pageviews_generator = get_paginated(
+            client=self.client, url=url, max_pages=max_pages
+        )
 
-        pages = 0
-        while next_page and pages < max_pages:
-            response = self._session.request("GET", next_page).json()
-            next_page = response["next"]
-            try:
-                response_list.append(response)
-            except NameError:
-                response_list = [response]
-            pages += 1
+        pageviews_list: list[DataFrame] = [
+            json_normalize(response, sep="_")
+            for response in pageviews_generator
+        ]
 
-        pageviews = []
-        for item in response_list:
-            pageviews.append(json_normalize(item["results"], sep="_"))
-        pageviews = concat(pageviews)
+        try:
+            pageviews = concat(pageviews_list)
+        except ValueError:
+            pageviews = DataFrame()
 
-        page = response["next"] if response["next"] else None
-
-        return {"pageviews": pageviews, "page": page}
+        return pageviews
