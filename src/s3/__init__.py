@@ -3,41 +3,28 @@ import os
 from boto3 import Session
 
 
-class S3KeyMissingError(Exception):
-    pass
+class MissingConfig(Exception):
+    """Raised if a required config environment variable is not set."""
 
 
-try:
-    S3_KEY = os.environ["S3_KEY"]
-except KeyError as err:
-    raise S3KeyMissingError(
-        "Unable to locate S3_KEY in the global environment."
-    ) from err
+def config_from_env(key: str) -> str:
+    """Fetches a config value from the global environment, raising
+    MissingConfig if it isn't there.
 
-try:
-    S3_SECRET = os.environ["S3_SECRET"]
-except KeyError as err:
-    raise S3KeyMissingError(
-        "Unable to locate S3_SECRET in the global environment."
-    ) from err
+    """
+    if not (value := os.environ.get(key, None)):
+        raise MissingConfig(f"{key} not set in the global environment")
+    return value
 
 
-if not all([S3_KEY, S3_SECRET]):
-    raise S3KeyMissingError(
-        """Unable to locate one or both of S3_KEY and S3_SECRET
-        in the global enviroment."""
-    )
+S3_KEY = config_from_env("S3_KEY")
+S3_SECRET = config_from_env("S3_SECRET")
 
 
-class Session(Session):
-    def __init__(self, key, secret):
-        super().__init__(
-            aws_access_key_id=key,
-            aws_secret_access_key=secret,
-            region_name="af-south-1",
-        )
-
-
-session = Session(key=S3_KEY, secret=S3_SECRET)
+session: Session = Session(
+    aws_access_key_id=S3_KEY,
+    aws_secret_access_key=S3_SECRET,
+    region_name="af-south-1",
+)
 
 from .main import pyS3 as pyS3
