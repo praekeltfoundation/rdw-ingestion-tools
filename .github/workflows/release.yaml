@@ -17,10 +17,10 @@ jobs:
           python-version: '3.10'
       - name: install pipx
         run: |
-          apt update
-          apt install pipx
+          sudo apt update
+          sudo apt install pipx
           pipx ensurepath
-          pipx ensurepath --global
+          sudo pipx ensurepath --global
       - name: install poetry
         run: |
           pipx install poetry
