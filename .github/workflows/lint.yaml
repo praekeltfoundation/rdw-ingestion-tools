@@ -26,8 +26,7 @@ jobs:
           poetry install --with dev
       - name: run linters
         run: |
-          poetry shell
-          .ci/lint.sh
+          poetry run .ci/lint.sh
 
 # jobs:
 #   isort-lint:
