@@ -6,4 +6,4 @@ fmt() {
     black "$@"
 }
 
-fmt src/ examples/
+fmt rdw_ingestion_tools/ examples/

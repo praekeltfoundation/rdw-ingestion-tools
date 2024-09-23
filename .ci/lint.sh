@@ -15,7 +15,7 @@ lint() {
     return $failed
 }
 
-lint src/
+lint rdw_ingestion_tools/
 result=$?
 
 if [ $result = 0 ]; then
