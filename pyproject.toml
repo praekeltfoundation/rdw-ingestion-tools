@@ -29,6 +29,10 @@ black = "^24.4.2"
 yamllint = "^1.35.1"
 mypy = "^1.10.0"
 
+
+[tool.poetry.group.examples.dependencies]
+tqdm = "^4.66.5"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
