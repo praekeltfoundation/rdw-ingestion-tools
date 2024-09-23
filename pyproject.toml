@@ -6,8 +6,8 @@ authors = ["Schalk1e <schalk@reachdigitalhealth.org>"]
 license = "MIT"
 readme = "README.md"
 packages = [
-   {include = "api", from = "src"},
-   {include = "s3", from = "src"}
+   {include = "api", from = "rdw_ingestion_tools"},
+   {include = "s3", from = "rdw_ingestion_tools"}
    ]
 
 [tool.poetry.dependencies]
