@@ -32,9 +32,7 @@ class Cards:
 
         url = f"cards/{card_id}"
 
-        cards_generator = get_paginated(
-            self.client, url, follow_redirects=True
-        )
+        cards_generator = get_paginated(self.client, url)
 
         try:
             cards = concat(
