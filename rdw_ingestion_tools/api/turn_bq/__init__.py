@@ -10,23 +10,30 @@ BASE_URL = config_from_env("TURN_BQ_API_BASE_URL")
 
 
 def get_paginated(
-    client: Client, url: str, **kwargs: str | int
+    client: Client, url: str, page_size: int = 100, **kwargs: str | int
 ) -> Iterator[dict]:
     """Paginate over Turn BQ API.
 
     This function will paginate over returned pages from the Turn BQ API.
 
     """
-    # Get token
     url = f"{url}/"
 
-    # Use token to query pages
-    response = client.get(url)
-    response.raise_for_status()
+    params: dict[str, int] = {"page": 1, "size": page_size}
 
-    response_json: dict = response.json()
+    while True:
+        response = client.get(url, params={**params, **kwargs})
+        response.raise_for_status()
 
-    yield response_json
+        response_json: dict = response.json()
+
+        response_data: dict = response_json["items"]
+        yield from response_data
+
+        if response_json["page"] < response_json["pages"]:
+            params["page"] += 1
+        else:
+            break
 
 
 token_request_headers = {
@@ -41,7 +48,6 @@ token_request_data = {
     "client_id": "",
     "client_secret": "",
 }
-
 
 token_response = Client().post(
     url=f"{BASE_URL}/token",
