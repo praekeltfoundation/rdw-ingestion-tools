@@ -13,9 +13,28 @@ class Cards:
 
     def get_cards(self) -> DataFrame:
         """Returns a pandas DataFrame of Turn Cards"""
-        url = "cards"
+
+        url = "cards/"
 
         cards_generator = get_paginated(self.client, url)
+
+        try:
+            cards = concat(
+                [json_normalize(obj, sep="_") for obj in cards_generator]
+            )
+        except ValueError:
+            cards = DataFrame()
+
+        return cards
+
+    def get_cards_by_id(self, card_id: int) -> DataFrame:
+        """Returns a pandas DataFrame of Turn Cards by card_id"""
+
+        url = f"cards/{card_id}"
+
+        cards_generator = get_paginated(
+            self.client, url, follow_redirects=True
+        )
 
         try:
             cards = concat(
