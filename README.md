@@ -65,6 +65,15 @@ TURN_API_BASE_URL="<url>"
 
 ```
 
+For the turn_bq API: (New Addition)
+
+```
+TURN_BQ_API_USER="<user>"
+TURN_BQ_API_PASS="<password>"
+TURN_BQ_API_BASE_URL="<url>"
+
+```
+
 If you want to use the s3 utilities (that allow you to read and write specific parquet files amongst other things), the following variables should be set:
 
 ```
