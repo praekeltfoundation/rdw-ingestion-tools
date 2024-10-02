@@ -1,8 +1,9 @@
 from attrs import define
 from httpx import Client
-from pandas import DataFrame, concat, json_normalize
+from pandas import DataFrame
 
-from .. import get_paginated
+from ..extensions.dataframe import concatenate
+from ..extensions.httpx import get_paginated
 
 
 @define
@@ -24,13 +25,6 @@ class Fields:
 
         fields_generator = get_paginated(self.client, url, **kwargs)
 
-        fields_list: list[DataFrame] = [
-            json_normalize(response, sep="_") for response in fields_generator
-        ]
-
-        try:
-            fields = concat(fields_list)
-        except ValueError:
-            fields = DataFrame()
+        fields = concatenate(fields_generator)
 
         return fields

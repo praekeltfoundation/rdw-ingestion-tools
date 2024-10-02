@@ -1,8 +1,9 @@
 from attrs import define
 from httpx import Client
-from pandas import DataFrame, concat, json_normalize
+from pandas import DataFrame
 
-from .. import get_paginated
+from ..extensions.dataframe import concatenate
+from ..extensions.httpx import get_paginated
 
 
 @define
@@ -27,13 +28,6 @@ class Pages:
             max_pages=max_pages,
         )
 
-        pages_list: list[DataFrame] = [
-            json_normalize(response, sep="_") for response in pages_generator
-        ]
-
-        try:
-            pages = concat(pages_list)
-        except ValueError:
-            pages = DataFrame()
+        pages = concatenate(pages_generator)
 
         return pages

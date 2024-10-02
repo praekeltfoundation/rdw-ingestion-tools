@@ -1,8 +1,9 @@
 from attrs import define
 from httpx import Client
-from pandas import DataFrame, concat, json_normalize
+from pandas import DataFrame
 
-from .. import get_paginated
+from ..extensions.dataframe import concatenate
+from ..extensions.httpx import get_paginated
 
 
 @define
@@ -28,14 +29,6 @@ class PageViews:
             client=self.client, url=url, max_pages=max_pages
         )
 
-        pageviews_list: list[DataFrame] = [
-            json_normalize(response, sep="_")
-            for response in pageviews_generator
-        ]
-
-        try:
-            pageviews = concat(pageviews_list)
-        except ValueError:
-            pageviews = DataFrame()
+        pageviews = concatenate(pageviews_generator)
 
         return pageviews
