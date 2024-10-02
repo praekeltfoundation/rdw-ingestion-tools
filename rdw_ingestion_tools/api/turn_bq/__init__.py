@@ -35,7 +35,9 @@ session_headers = {
     "Content-Type": "application/json",
 }
 
-client: Client = Client(base_url=BASE_URL, headers=session_headers)
+client: Client = Client(
+    base_url=BASE_URL, headers=session_headers, timeout=10.0
+)
 
 
 from .main import pyTurnBQ as pyTurnBQ
