@@ -15,7 +15,8 @@ def get_paginated(
 
         data: dict = response.json()
 
-        results: dict = data["results"]
+        results: list[dict] = data["results"]
+
         yield from results
 
         url = data["next"]

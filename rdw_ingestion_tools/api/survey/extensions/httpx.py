@@ -15,7 +15,8 @@ def get_paginated(
         response = client.get(url=url, params=params)
         response.raise_for_status()
 
-        data: dict = response.json()["results"]
+        data: list[dict] = response.json()["results"]
+
         yield from data
 
         url = response.json()["next"]

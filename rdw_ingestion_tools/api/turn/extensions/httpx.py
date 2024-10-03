@@ -27,7 +27,7 @@ def get_paginated(
 
         response_json: dict = response.json()
 
-        response_data: dict = response_json["data"]
+        response_data: list[dict] = response_json["data"]
         yield from response_data
 
         try:
