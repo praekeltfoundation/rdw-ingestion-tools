@@ -2,7 +2,7 @@ from attrs import define
 from httpx import Client
 from pandas import DataFrame, concat, json_normalize
 
-from .. import get_paginated
+from ..extensions.httpx import get_paginated
 
 
 @define

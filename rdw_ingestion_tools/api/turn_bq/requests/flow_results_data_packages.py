@@ -1,8 +1,8 @@
+from api import concatenate
 from attrs import define
 from httpx import Client
 from pandas import DataFrame
 
-from ..extensions.dataframe import concatenate
 from ..extensions.httpx import get_paginated
 
 
