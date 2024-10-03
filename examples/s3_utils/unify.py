@@ -1,10 +1,10 @@
 """
-Usage example: pr python3 examples/s3_utils/unify.py --bucket 'rdw-za' --prefix 'contact-ndoh/momconnect-flow-results/flows/questions/'
+Usage example: pr python3 examples/s3_utils/unify.py --bucket 'rdw-za' --prefix
+'contact-ndoh/momconnect-flow-results/flows/questions/'
 
 """
 
 import argparse
-import os
 
 from pandas import concat
 from s3 import pyS3

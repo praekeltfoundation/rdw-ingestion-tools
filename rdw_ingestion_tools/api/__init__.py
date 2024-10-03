@@ -3,6 +3,9 @@ from collections.abc import Iterator
 
 from pandas import DataFrame, concat, json_normalize
 
+# https://github.com/astral-sh/ruff/issues/3388
+from typing_extensions import Never  # noqa: UP035
+
 
 class MissingConfig(Exception):
     """Raised if a required config environment variable is not set."""
@@ -18,7 +21,9 @@ def config_from_env(key: str) -> str:
     return value
 
 
-def concatenate(objs: list[dict] | dict | list | Iterator) -> DataFrame:
+def concatenate(
+    objs: list[dict] | dict[Never, Never] | list[Never] | Iterator,
+) -> DataFrame:
     """
     Extend pandas concat to not only support dicts or lists of dicts, but
     also empty lists (which is often returned by the APIs).
