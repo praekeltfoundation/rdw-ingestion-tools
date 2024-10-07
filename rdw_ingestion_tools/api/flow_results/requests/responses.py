@@ -3,7 +3,7 @@ from urllib.parse import urlencode
 from attrs import define
 from httpx import Client
 
-from .. import get_ids, get_paginated
+from ..extensions.httpx import get_ids, get_paginated
 
 
 @define

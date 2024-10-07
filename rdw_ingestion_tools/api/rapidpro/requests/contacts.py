@@ -1,8 +1,10 @@
 from attrs import define
 from httpx import Client
-from pandas import DataFrame, concat, json_normalize
+from pandas import DataFrame
 
-from .. import get_paginated
+from api import concatenate
+
+from ..extensions.httpx import get_paginated
 
 
 @define
@@ -27,14 +29,6 @@ class Contacts:
 
         contacts_generator = get_paginated(self.client, url, **kwargs)
 
-        contacts_list: list[DataFrame] = [
-            json_normalize(response, sep="_")
-            for response in contacts_generator
-        ]
-
-        try:
-            contacts = concat(contacts_list)
-        except ValueError:
-            contacts = DataFrame()
+        contacts = concatenate(contacts_generator)
 
         return contacts

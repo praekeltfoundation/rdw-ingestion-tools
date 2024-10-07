@@ -1,4 +1,10 @@
 import os
+from collections.abc import Iterator
+
+from pandas import DataFrame, concat, json_normalize
+
+# https://github.com/astral-sh/ruff/issues/3388
+from typing_extensions import Never  # noqa: UP035
 
 
 class MissingConfig(Exception):
@@ -13,3 +19,19 @@ def config_from_env(key: str) -> str:
     if not (value := os.environ.get(key, None)):
         raise MissingConfig(f"{key} not set in the global environment")
     return value
+
+
+def concatenate(
+    objs: list[dict] | dict[Never, Never] | list[Never] | Iterator,
+) -> DataFrame:
+    """
+    Extend pandas concat to not only support dicts or lists of dicts, but
+    also empty lists (which is often returned by the APIs).
+
+    """
+    try:
+        df = concat([json_normalize(obj, sep="_") for obj in objs])
+    except ValueError:
+        df = DataFrame()
+
+    return df

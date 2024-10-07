@@ -21,7 +21,8 @@ def get_paginated(
 
         response_json: dict = response.json()
 
-        response_data: dict = response_json["items"]
+        response_data: list[dict] = response_json["items"]
+
         yield from response_data
 
         if response_json["page"] < response_json["pages"]:

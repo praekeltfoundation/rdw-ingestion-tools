@@ -1,7 +1,7 @@
 from attrs import define
 from httpx import Client
 
-from .. import get_ids
+from ..extensions.httpx import get_ids
 
 
 @define

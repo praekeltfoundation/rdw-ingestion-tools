@@ -1,8 +1,10 @@
 from attrs import define
 from httpx import Client
-from pandas import DataFrame, concat, json_normalize
+from pandas import DataFrame
 
-from .. import get_paginated
+from api import concatenate
+
+from ..extensions.httpx import get_paginated
 
 
 @define
@@ -24,13 +26,6 @@ class Flows:
 
         flows_generator = get_paginated(self.client, url, **kwargs)
 
-        flows_list: list[DataFrame] = [
-            json_normalize(response, sep="_") for response in flows_generator
-        ]
-
-        try:
-            flows = concat(flows_list)
-        except ValueError:
-            flows = DataFrame()
+        flows = concatenate(flows_generator)
 
         return flows

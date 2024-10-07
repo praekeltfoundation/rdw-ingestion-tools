@@ -1,8 +1,10 @@
 from attrs import define
 from httpx import Client
-from pandas import DataFrame, concat, json_normalize
+from pandas import DataFrame
 
-from .. import get_paginated
+from api import concatenate
+
+from ..extensions.httpx import get_paginated
 
 
 @define
@@ -24,13 +26,6 @@ class Groups:
 
         groups_generator = get_paginated(self.client, url, **kwargs)
 
-        groups_list: list[DataFrame] = [
-            json_normalize(response, sep="_") for response in groups_generator
-        ]
-
-        try:
-            groups = concat(groups_list)
-        except ValueError:
-            groups = DataFrame()
+        groups = concatenate(groups_generator)
 
         return groups
