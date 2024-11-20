@@ -68,8 +68,7 @@ TURN_API_BASE_URL="<url>"
 For the turn_bq API: (New Addition)
 
 ```
-TURN_BQ_API_USER="<user>"
-TURN_BQ_API_PASS="<password>"
+TURN_BQ_API_KEY="<secret>"
 TURN_BQ_API_BASE_URL="<url>"
 
 ```
