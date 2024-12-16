@@ -12,7 +12,7 @@ session_headers = {
 }
 
 client: Client = Client(
-    base_url=BASE_URL, headers=session_headers, timeout=10.0
+    base_url=BASE_URL, headers=session_headers, timeout=30.0
 )
 
 
