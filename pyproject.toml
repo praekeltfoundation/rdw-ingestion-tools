@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rdw-ingestion-tools"
-version = "1.0.0"
+version = "1.0.2"
 description = "A Python package for integrating third-party data to Reach Digital Health's AWS Data Lake."
 authors = ["Schalk1e <schalk@reachdigitalhealth.org>"]
 license = "MIT"
