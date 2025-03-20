@@ -129,6 +129,10 @@ prefix=os.environ["PREFIX"]
 pyS3.s3.get_filenames(bucket=bucket, prefix=prefix)
 ```
 
+### Running an example locally
+1. `uv sync`
+2. `uv run --env-file .env examples/{path}` e.g. `uv run --env-file .env examples/turn_bq/cards.py`
+
 ## to-do
 
 - Add tests - yes, I am a bad developer for not having any yet.
