@@ -17,12 +17,8 @@ dependencies = [
     "types-tqdm>=4.66.0.20240417"
 ]
 
-[tool.hatch.build.targets.wheel]
-packages = [".", "api", "s3"]
-
 [dependency-groups]
 dev = [
-    "black>=24.4.2",
     "mypy>=1.10.0",
     "ruff>=0.4.7",
     "yamllint>=1.35.1",
@@ -34,8 +30,8 @@ types = [
     "boto3-stubs>=1.34.124",
 ]
 
-[tool.black]
-line-length = 79
+[tool.hatch.build.targets.wheel]
+packages = [".", "api", "s3"]
 
 [tool.mypy]
 # Run mypy . --explicit-package-bases. We use py.typed.
