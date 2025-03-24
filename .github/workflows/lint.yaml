@@ -16,7 +16,7 @@ jobs:
       - name: Install dependencies
         id: install-deps
         run: |
-          uv sync --only-group types
+          uv sync
       - name: run linters
         run: |
           chmod +x .ci/lint.sh
