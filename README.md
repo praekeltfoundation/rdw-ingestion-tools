@@ -90,15 +90,15 @@ There are 2 ways of doing this.
 `rdw-ingestion-tools` is public!
 
 ```
-pip3 install git+https://github.com/praekeltfoundation/rdw-ingestion-tools@v0.3.4
+pip3 install git+https://github.com/praekeltfoundation/rdw-ingestion-tools@v1.0.2
 ```
 
-- From clone (with [poetry](https://python-poetry.org/docs/)). This is recommended:
+- From clone (with [uv](https://docs.astral.sh/uv/)). This is recommended:
 
 ```
 git clone git@github.com:praekeltfoundation/rdw-ingestion-tools.git
 
-poetry install
+uv sync
 
 ```
 
