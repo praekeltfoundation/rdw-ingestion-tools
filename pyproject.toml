@@ -30,8 +30,13 @@ types = [
     "boto3-stubs>=1.34.124",
 ]
 
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [tool.hatch.build.targets.wheel]
-packages = [".", "api", "s3"]
+packages = [".", "rdw_ingestion_tools/api", "rdw_ingestion_tools/s3"]
+
 
 [tool.mypy]
 # Run mypy . --explicit-package-bases. We use py.typed.
