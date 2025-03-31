@@ -6,7 +6,7 @@
   <p>
     <img src="https://github.com/praekeltfoundation/rdw-ingestion-tools/workflows/lint/badge.svg" width="120" />
     <img src="https://github.com/praekeltfoundation/rdw-ingestion-tools/workflows/release/badge.svg" width="145" />
-    <img src="https://img.shields.io/badge/version-1.0.2-orange" width="112" />
+    <img src="https://img.shields.io/badge/version-1.0.3-orange" width="112" />
     <img src="https://img.shields.io/badge/license-MIT-blue" width="100" />
   </p>
 </div>
