@@ -1,6 +1,6 @@
 [project]
 name = "rdw-ingestion-tools"
-version = "1.0.3"
+version = "1.0.4.dev0"
 description = "A Python package for integrating third-party data to Reach Digital Health's AWS Data Lake."
 authors = [
     {name = "Schalk <schalk@reachdigitalhealth.org>"},
