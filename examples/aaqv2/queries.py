@@ -5,4 +5,4 @@ end_date = "2025-04-02T00:00:00"
 
 queries = pyAAQV2.queries.get_queries(start_date=start_date, end_date=end_date)
 
-queries.head(5)
+print(queries.head(5))

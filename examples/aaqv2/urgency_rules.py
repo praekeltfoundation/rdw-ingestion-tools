@@ -2,4 +2,4 @@ from api.aaqv2 import pyAAQV2
 
 urgency_rules = pyAAQV2.urgency_rules.get_urgency_rules()
 
-urgency_rules.head(5)
+print(urgency_rules.head(5))

@@ -7,4 +7,4 @@ urgency_queries = pyAAQV2.urgency_queries.get_urgency_queries(
     start_date=start_date, end_date=end_date
 )
 
-urgency_queries.head(5)
+print(urgency_queries.head(5))
