@@ -2,7 +2,7 @@ from attrs import define
 from httpx import Client
 from pandas import DataFrame
 
-from ..extensions.httpx import get_paginated
+from ..extensions.httpx import get
 
 
 @define
@@ -26,6 +26,6 @@ class Queries:
 
         url = "queries"
 
-        queries_generator = get_paginated(self.client, url, **kwargs)
+        queries_generator = get(self.client, url, **kwargs)
 
         return DataFrame(queries_generator)

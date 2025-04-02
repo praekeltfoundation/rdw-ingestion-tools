@@ -2,7 +2,7 @@ from attrs import define
 from httpx import Client
 from pandas import DataFrame
 
-from ..extensions.httpx import get_paginated
+from ..extensions.httpx import get
 
 
 @define
@@ -29,6 +29,6 @@ class UrgencyQueries:
 
         url = "urgency-queries"
 
-        urgency_queries_generator = get_paginated(self.client, url, **kwargs)
+        urgency_queries_generator = get(self.client, url, **kwargs)
 
         return DataFrame(urgency_queries_generator)

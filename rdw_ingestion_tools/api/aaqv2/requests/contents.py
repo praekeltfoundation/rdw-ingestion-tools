@@ -2,7 +2,7 @@ from attrs import define
 from httpx import Client
 from pandas import DataFrame
 
-from ..extensions.httpx import get_paginated
+from ..extensions.httpx import get
 
 
 @define
@@ -22,7 +22,7 @@ class Contents:
 
         url = "contents"
 
-        contents_generator = get_paginated(self.client, url, **kwargs)
+        contents_generator = get(self.client, url, **kwargs)
 
         # IDI return weird stuff in the new API. Let's see if it
         # has what we need to convert to a df.

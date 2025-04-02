@@ -3,34 +3,20 @@ from collections.abc import Iterator
 from httpx import Client
 
 
-def get_paginated(
+def get(
     client: Client,
     url: str,
     **kwargs: str | int,
 ) -> Iterator[dict]:
-    """Paginate over pages in an AAQV2 endpoint up to a limit."""
+    """Get data from an AAQV2 endpoint.
 
-    limit: int = 100
-    offset: int = 0
+    NOTE: This new API doesn't support pagination like the previous API did :/
+    Consider opening a PR to their repo for this?
 
-    params = {"offset": offset, "limit": limit}
+    """
 
-    while True:
-        print(
-            "Retrieving results for offsets: ",
-            params["offset"],
-            "to",
-            params["offset"] + limit,
-            sep=" ",
-        )
-        # Need {**params, **kwargs}. mypy dislikes str|int for lines 27, 40.
-        response = client.get(url, params={**params, **kwargs})
-        response.raise_for_status()
+    response = client.get(url, params={**kwargs})
+    response.raise_for_status()
 
-        result: list[dict] = response.json()["result"]
-        yield from result
-
-        if len(result) < limit:
-            return
-        else:
-            params["offset"] += limit
+    result: list[dict] = response.json()
+    yield from result
