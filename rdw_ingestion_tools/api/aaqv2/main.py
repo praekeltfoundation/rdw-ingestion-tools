@@ -1,7 +1,7 @@
-from api.aaq.requests.contents import Contents
-from api.aaq.requests.queries import Queries
-from api.aaq.requests.urgency_queries import UrgencyQueries
-from api.aaq.requests.urgency_rules import UrgencyRules
+from api.aaqv2.requests.contents import Contents
+from api.aaqv2.requests.queries import Queries
+from api.aaqv2.requests.urgency_queries import UrgencyQueries
+from api.aaqv2.requests.urgency_rules import UrgencyRules
 
 from . import client
 

@@ -11,7 +11,7 @@ class Contents:
 
     client: Client
 
-    def get_faqmatches(self, **kwargs: str | int) -> DataFrame:
+    def get_contents(self, **kwargs: str | int) -> DataFrame:
         """Get a pandas DataFrame of contents.
 
         No time-based query parameters are supported for this endpoint.
