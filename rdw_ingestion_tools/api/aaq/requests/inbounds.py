@@ -23,7 +23,7 @@ class FAQRank(TypedDict):
 
 
 def build_faqranks(
-    model_scoring_dict: dict[str, str | FAQModel]
+    model_scoring_dict: dict[str, str | FAQModel],
 ) -> Iterator[FAQRank]:
     """Extracts important information from the AAQ model scoring dict.
 

@@ -9,7 +9,7 @@ lint() {
     # Track failures so we can avoid returning early.
     failed=0
 
-    black --check "$@" || failed=1
+    ruff format --check "$@" || failed=1
     mypy --explicit-package-bases "$@" || failed=1
     ruff check "$@" || failed=1
     return $failed

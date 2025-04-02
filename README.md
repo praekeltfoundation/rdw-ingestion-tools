@@ -6,7 +6,7 @@
   <p>
     <img src="https://github.com/praekeltfoundation/rdw-ingestion-tools/workflows/lint/badge.svg" width="120" />
     <img src="https://github.com/praekeltfoundation/rdw-ingestion-tools/workflows/release/badge.svg" width="145" />
-    <img src="https://img.shields.io/badge/version-1.0.2-orange" width="112" />
+    <img src="https://img.shields.io/badge/version-1.0.4.dev0-orange" width="145" />
     <img src="https://img.shields.io/badge/license-MIT-blue" width="100" />
   </p>
 </div>
@@ -90,15 +90,15 @@ There are 2 ways of doing this.
 `rdw-ingestion-tools` is public!
 
 ```
-pip3 install git+https://github.com/praekeltfoundation/rdw-ingestion-tools@v0.3.4
+pip3 install git+https://github.com/praekeltfoundation/rdw-ingestion-tools@v1.0.2
 ```
 
-- From clone (with [poetry](https://python-poetry.org/docs/)). This is recommended:
+- From clone (with [uv](https://docs.astral.sh/uv/)). This is recommended:
 
 ```
 git clone git@github.com:praekeltfoundation/rdw-ingestion-tools.git
 
-poetry install
+uv sync
 
 ```
 
@@ -128,6 +128,10 @@ prefix=os.environ["PREFIX"]
 
 pyS3.s3.get_filenames(bucket=bucket, prefix=prefix)
 ```
+
+### Running an example locally
+1. `uv sync`
+2. `uv run --env-file .env examples/{path}` e.g. `uv run --env-file .env examples/turn_bq/cards.py`
 
 ## to-do
 
