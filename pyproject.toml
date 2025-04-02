@@ -22,7 +22,9 @@ dev = [
     "mypy>=1.10.0",
     "ruff>=0.4.7",
     "yamllint>=1.35.1",
-    "tqdm>=4.66.5"
+    "tqdm>=4.66.5",
+    "pandas-stubs>=2.2.3.250308",
+    "boto3-stubs>=1.37.19",
 ]
 types = [
     "pandas-stubs>=2.2.1.240316",

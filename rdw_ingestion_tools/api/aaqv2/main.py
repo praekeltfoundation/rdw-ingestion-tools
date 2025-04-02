@@ -1,19 +1,15 @@
-# from api.aaq.requests.faqmatches import FAQMatches
-# from api.aaq.requests.inbounds import Inbounds
-# from api.aaq.requests.inbounds_ud import InboundsUD
-# from api.aaq.requests.urgency_rules import UrgencyRules
-
-# ^ These will change
+from api.aaq.requests.contents import Contents
+from api.aaq.requests.queries import Queries
+from api.aaq.requests.urgency_queries import UrgencyQueries
+from api.aaq.requests.urgency_rules import UrgencyRules
 
 from . import client
 
 
 class pyAAQV2:
-    """A wrapper class for the various AAQ endpoints."""
+    """A wrapper class for the various AAQ V2 endpoints."""
 
-    # inbounds = Inbounds(client)
-    # faqmatches = FAQMatches(client)
-    # inbounds_ud = InboundsUD(client)
-    # urgency_rules = UrgencyRules(client)
-
-    # ^ These will change
+    contents = Contents(client)
+    urgency_rules = UrgencyRules(client)
+    urgency_queries = UrgencyQueries(client)
+    queries = Queries(client)
