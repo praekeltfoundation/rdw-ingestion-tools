@@ -90,8 +90,6 @@ class Inbounds:
         faq_ranks_list = []
         for _idx, row in inbounds.iterrows():
             for faqrank in build_faqranks(dict(row["model_scoring"])):
-                faq_ranks_list.append(
-                    {"inbound_id": row["inbound_id"], **faqrank}
-                )
+                faq_ranks_list.append({"inbound_id": row["inbound_id"], **faqrank})
 
         return DataFrame(faq_ranks_list)

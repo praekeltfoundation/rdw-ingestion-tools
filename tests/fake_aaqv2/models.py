@@ -1,43 +1,42 @@
-from typing import Sequence, Any
+from collections.abc import Sequence
+from typing import Any, Self
 
-from functools import cached_property
+from attrs import define
+from attrs import fields as dc_fields
 
-from attrs import define, fields
-from httpx import ASGITransport, AsyncClient
-from starlette.applications import Starlette
-from starlette.requests import Request
-from starlette.responses import JSONResponse
-from starlette.routing import Route
-
-from abc import ABCMeta
+JsonObj = dict[str, "Json"]
+JsonArr = list["Json"]
+Json = str | int | float | bool | JsonObj | JsonArr | None
 
 
 @define(frozen=True, kw_only=True)
-class AAQV2ModelBase(metaclass=ABCMeta):
+class AAQV2ModelBase:
     """
     Base class for all AAQV2 data types.
 
     """
 
     @classmethod
-    def from_json(cls, resp_json=JsonObj) -> Self:
+    def from_json(cls, resp_json: JsonObj) -> Self:
         # TODO: Review the specifics of this method.
-        names = {f.alias for f in fields(cls)}
+        names = {f.alias for f in dc_fields(cls)}
         fields = {k: v for k, v in resp_json.items() if k in names}
 
-        # Since we can get arbitrary JSON here, we have to accept ambiguous types.
+        # Since we can get arbitrary JSON here, we have to
+        # accept ambiguous types.
         return cls(**fields, raw_json=resp_json)  # type: ignore
 
 
 @define(frozen=True, kw_only=True)
-class Content(ABCMeta):
+class Content(AAQV2ModelBase):
     """
     AAQV2 Content type that (according to the docs) returns all contents
     for a user.
 
     This endpoint receives no arguments parameters, so it's unclear whether this
-    will return content across *all* users, or simply for the authenticated user.
-    For this to function as a data export API, we'd need to have data for all users.
+    will return content across *all* users, or simply for the authenticated
+    user. For this to function as a data export API, we'd need to have data
+    for all users.
 
     """
 
@@ -55,15 +54,15 @@ class Content(ABCMeta):
 
 
 @define(frozen=True, kw_only=True)
-class UrgencyRule(ABCMeta):
+class UrgencyRule(AAQV2ModelBase):
     """
-    AAQV2 Urgency Rule type that (according to the docs) returns all urgency rules
-    for a user.
+    AAQV2 Urgency Rule type that (according to the docs) returns all
+    urgency rules for a user.
 
     This endpoint receives no arguments parameters, so it's unclear whether this
     will return rules across *all* users, or simply for the authenticated user.
-    For this to function as a data export API, we'd need to have data for all users.
-
+    For this to function as a data export API, we'd need to have data for
+    all users.
 
     """
 
@@ -76,7 +75,7 @@ class UrgencyRule(ABCMeta):
 
 
 @define(frozen=True, kw_only=True)
-class QueryResponse(ABCMeta):
+class QueryResponse(AAQV2ModelBase):
     """
     A subtype in the Query type.
 
@@ -90,7 +89,7 @@ class QueryResponse(ABCMeta):
 
 
 @define(frozen=True, kw_only=True)
-class ResponseFeedback(ABCMeta):
+class ResponseFeedback(AAQV2ModelBase):
     """
     A subtype in the Query type.
 
@@ -103,14 +102,17 @@ class ResponseFeedback(ABCMeta):
 
 
 @define(frozen=True, kw_only=True)
-class Query(ABCMeta):
+class Query(AAQV2ModelBase):
     """
     AAQV2 Query type that (according to the docs) returns all queries for a user
     between a start and an end date.
 
-    "Get all queries including child records for a user between a start and end date."
+    "Get all queries including child records for a user between a start
+    and end date."
 
-    Note that the start_date and end_date can be provided as a date or datetime object.
+    Note that the start_date and end_date can be provided as a date
+    or datetime object.
+
     """
 
     query_id: int
@@ -126,7 +128,7 @@ class Query(ABCMeta):
 
 
 @define(frozen=True, kw_only=True)
-class UrgencyQueryResponseExtract(ABCMeta):
+class UrgencyQueryResponseExtract(AAQV2ModelBase):
     """
     A subtype in the UrgencyQuery type.
 
@@ -140,13 +142,16 @@ class UrgencyQueryResponseExtract(ABCMeta):
 
 
 @define(frozen=True, kw_only=True)
-class UrgencyQuery(ABCMeta):
+class UrgencyQuery(AAQV2ModelBase):
     """
     AAQV2 UrgencyQuery type that allows you to, according to the docs, to:
 
-    "Get all urgency queries including child records for a user between a start and end date."
+    "Get all urgency queries including child records for a user between a start
+    and end date."
 
-    Note that the start_date and end_date can be provided as a date or datetime object.
+    Note that the start_date and end_date can be provided as a date
+    or datetime object.
+
     """
 
     urgency_query_id: int
