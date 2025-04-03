@@ -21,9 +21,7 @@ def get_ids(client: Client, **kwargs: str | int) -> Iterator[str]:
         yield flow["id"]
 
 
-def get_paginated(
-    client: Client, url: str, **kwargs: str | int
-) -> Iterator[list]:
+def get_paginated(client: Client, url: str, **kwargs: str | int) -> Iterator[list]:
     """Paginate over the Flow Results Responses Endpoint.
 
     Each response returns a next link which is followed until

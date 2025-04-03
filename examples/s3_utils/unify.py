@@ -38,9 +38,7 @@ command_line_parser.add_argument(
 command_line_args = command_line_parser.parse_args()
 
 if __name__ == "__main__":
-    files = pyS3.s3.get_filenames(
-        command_line_args.bucket, command_line_args.prefix
-    )
+    files = pyS3.s3.get_filenames(command_line_args.bucket, command_line_args.prefix)
 
     dfs = []
     for file in tqdm(files):

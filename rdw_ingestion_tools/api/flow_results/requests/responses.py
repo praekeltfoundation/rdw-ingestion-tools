@@ -62,8 +62,6 @@ class Responses:
             responses["session_id"].extend([r[4] for r in response_generator])
             responses["question_id"].extend([r[5] for r in response_generator])
             responses["response_id"].extend([r[6] for r in response_generator])
-            responses["response_metadata"].extend(
-                [r[7] for r in response_generator]
-            )
+            responses["response_metadata"].extend([r[7] for r in response_generator])
 
         return responses

@@ -38,16 +38,12 @@ class Messages:
         for obj in messages_generator:
             if "_vnd" not in obj:
                 contacts.append(json_normalize(obj["contacts"], sep="_"))
-                inbound_messages.append(
-                    json_normalize(obj["messages"], sep="_")
-                )
+                inbound_messages.append(json_normalize(obj["messages"], sep="_"))
             else:
                 outbound_messages.append(json_normalize(obj, sep="_"))
 
         try:
-            df_inbound = concat(
-                [concat(contacts), concat(inbound_messages)], axis=1
-            )
+            df_inbound = concat([concat(contacts), concat(inbound_messages)], axis=1)
         except ValueError:
             df_inbound = DataFrame()
 

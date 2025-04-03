@@ -72,9 +72,7 @@ class S3:
         path: str | None = None,
         dataset: bool = True,
         dtype: dict[str, str] | None = None,
-        mode: (
-            Literal["append", "overwrite", "overwrite_partitions"] | None
-        ) = None,
+        mode: (Literal["append", "overwrite", "overwrite_partitions"] | None) = None,
     ) -> None:
         """Write a DataFrame to parquet in s3."""
         wr.s3.to_parquet(
