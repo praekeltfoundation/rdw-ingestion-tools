@@ -75,9 +75,9 @@ class FakeAAQV2:
         return Map(
             [
                 Rule("/queries", endpoint=self._handle_queries),
-                Rule("/urgency_queries", endpoint=self._handle_urgency_queries),
+                Rule("/urgency-queries", endpoint=self._handle_urgency_queries),
                 Rule("/contents", endpoint=self._handle_contents),
-                Rule("/urgency_rules", endpoint=self._handle_urgency_rules),
+                Rule("/urgency-rules", endpoint=self._handle_urgency_rules),
             ]
         )
 

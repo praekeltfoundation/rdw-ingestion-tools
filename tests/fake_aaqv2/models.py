@@ -1,7 +1,7 @@
 from collections.abc import Sequence
 from typing import Any, Self
 
-from attrs import define
+from attrs import asdict, define
 from attrs import fields as dc_fields
 
 JsonObj = dict[str, "Json"]
@@ -25,6 +25,9 @@ class AAQV2ModelBase:
         # Since we can get arbitrary JSON here, we have to
         # accept ambiguous types.
         return cls(**fields, raw_json=resp_json)  # type: ignore
+
+    def to_dict(self) -> dict:
+        return asdict(self)
 
 
 @define(frozen=True, kw_only=True)
