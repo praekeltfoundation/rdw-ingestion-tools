@@ -105,6 +105,16 @@ class ResponseFeedback(AAQV2ModelBase):
 
 
 @define(frozen=True, kw_only=True)
+class ContentFeedback(ResponseFeedback):
+    """
+    A subtype in the ResponseFeedback type.
+
+    """
+
+    content_id: int
+
+
+@define(frozen=True, kw_only=True)
 class Query(AAQV2ModelBase):
     """
     AAQV2 Query type that (according to the docs) returns all queries for a user

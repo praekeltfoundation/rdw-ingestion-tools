@@ -64,7 +64,7 @@ class FakeAAQV2:
         adapter = self.url_map.bind_to_environ(request.environ)
         try:
             endpoint, _ = adapter.match()
-            return endpoint()
+            return endpoint(request)
         except AAQHTTPErr as e:
             return self._err_handler(e)
         except HTTPException as e:
@@ -81,16 +81,35 @@ class FakeAAQV2:
             ]
         )
 
-    def _handle_queries(self):
-        return self._json_response(self.queries)
+    def _handle_queries(self, request: Request):
+        start = request.args.get("start_date")
+        end = request.args.get("end_date")
 
-    def _handle_urgency_queries(self):
-        return self._json_response(self.urgency_queries)
+        return self._json_response(
+            [
+                query
+                for query in self.queries
+                if query.query_datetime_utc >= start and query.query_datetime_utc <= end
+            ]
+        )
 
-    def _handle_contents(self):
+    def _handle_urgency_queries(self, request: Request):
+        start = request.args.get("start_date")
+        end = request.args.get("end_date")
+
+        return self._json_response(
+            [
+                urgency_query
+                for urgency_query in self.urgency_queries
+                if urgency_query.message_datetime_utc >= start
+                and urgency_query.message_datetime_utc <= end
+            ]
+        )
+
+    def _handle_contents(self, request: Request):
         return self._json_response(self.contents)
 
-    def _handle_urgency_rules(self):
+    def _handle_urgency_rules(self, request: Request):
         return self._json_response(self.urgency_rules)
 
     def wsgi_app(self, environ, start_response):
