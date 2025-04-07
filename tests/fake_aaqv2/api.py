@@ -1,25 +1,17 @@
+import json
 from functools import cached_property
 
 from attrs import define, field
-from httpx import ASGITransport, AsyncClient
-from starlette.applications import Starlette
-from starlette.requests import Request
-from starlette.responses import JSONResponse
-from starlette.routing import Route
+from httpx import Client, WSGITransport
+from werkzeug.exceptions import HTTPException
+from werkzeug.routing import Map, Rule
+from werkzeug.wrappers import Request, Response
 
 from .models import Content, Query, UrgencyQuery, UrgencyRule
 
 
 @define
 class AAQHTTPErr(Exception):
-    """
-    Starlette's HTTPException doesn't include 422 validation errors.
-
-    The only error the data export API endpoints surface are
-    validation errors where datetime parameters are incorrect.
-
-    """
-
     status_code: int
     error: str
     message: str
@@ -29,13 +21,8 @@ def mk_422(message: str) -> AAQHTTPErr:
     return AAQHTTPErr(status_code=422, error="Unprocessable Entity", message=message)
 
 
-# The AAQV2 data export API doesn't support pagination.
 @define
 class FakeAAQV2:
-    """
-    A fake implementation of the AAQV2 data export API endpoints.
-    """
-
     urgency_rules: list[UrgencyRule] = field(factory=list)
     urgency_queries: list[UrgencyQuery] = field(factory=list)
     queries: list[Query] = field(factory=list)
@@ -53,47 +40,66 @@ class FakeAAQV2:
     def add_queries(self, *queries: Query) -> None:
         self.queries.extend(queries)
 
-    async def get_queries(self, request: Request) -> JSONResponse:
-        # TODO: Logic to validate start and end dates and filter output.
-        return JSONResponse(self.queries)
-
-    async def get_urgency_queries(self, request: Request) -> JSONResponse:
-        # TODO: Logic to validate start and end dates and filter output.
-        return JSONResponse(self.urgency_queries)
-
-    async def get_contents(self) -> JSONResponse:
-        # Do we need a request arg?
-        return JSONResponse(self.contents)
-
-    async def get_urgency_rules(self) -> JSONResponse:
-        # Do we need a request arg?
-        return JSONResponse(self.urgency_rules)
-
-    def _err_handler(self, _req: Request, e: Exception) -> JSONResponse:
-        assert isinstance(e, AAQHTTPErr)
-        return JSONResponse(
-            {"statusCode": e.status_code, "error": e.error, "message": e.message},
-            status_code=422,
+    def _json_response(self, data: object, status: int = 200) -> Response:
+        return Response(
+            json.dumps(data, default=self._serialize),
+            status=status,
+            content_type="application/json",
         )
 
-    @property
-    def _routes(self) -> list[Route]:
-        return [
-            Route("/data-api/queries", self.get_queries),
-            Route("/data-api/urgency_queries", self.get_urgency_queries),
-            Route("/data-api/contents", self.get_contents),
-            Route("/data-api/urgency_rules", self.get_urgency_rules),
-        ]
+    def _serialize(self, obj):
+        if hasattr(obj, "__dict__"):
+            return obj.__dict__
+        elif hasattr(obj, "__attrs_attrs__"):
+            return {a.name: getattr(obj, a.name) for a in obj.__attrs_attrs__}
+        return str(obj)
+
+    def _err_handler(self, e: AAQHTTPErr) -> Response:
+        return self._json_response(
+            {"statusCode": e.status_code, "error": e.error, "message": e.message},
+            status=e.status_code,
+        )
+
+    def dispatch_request(self, request: Request) -> Response:
+        adapter = self.url_map.bind_to_environ(request.environ)
+        try:
+            endpoint, _ = adapter.match()
+            return endpoint()
+        except AAQHTTPErr as e:
+            return self._err_handler(e)
+        except HTTPException as e:
+            return e.get_response(request.environ)
 
     @cached_property
-    def app(self) -> Starlette:
-        return Starlette(
-            routes=self._routes,
-            exception_handlers={AAQHTTPErr: self._err_handler},
+    def url_map(self) -> Map:
+        return Map(
+            [
+                Rule("/queries", endpoint=self._handle_queries),
+                Rule("/urgency_queries", endpoint=self._handle_urgency_queries),
+                Rule("/contents", endpoint=self._handle_contents),
+                Rule("/urgency_rules", endpoint=self._handle_urgency_rules),
+            ]
         )
 
-    def async_client(self) -> AsyncClient:
-        return AsyncClient(
-            base_url="https://fake_aaqv2/api",
-            transport=ASGITransport(app=self.app),
+    def _handle_queries(self):
+        return self._json_response(self.queries)
+
+    def _handle_urgency_queries(self):
+        return self._json_response(self.urgency_queries)
+
+    def _handle_contents(self):
+        return self._json_response(self.contents)
+
+    def _handle_urgency_rules(self):
+        return self._json_response(self.urgency_rules)
+
+    def wsgi_app(self, environ, start_response):
+        request = Request(environ)
+        response = self.dispatch_request(request)
+        return response(environ, start_response)
+
+    def client(self) -> Client:
+        return Client(
+            base_url="http://fake_aaqv2",
+            transport=WSGITransport(self.wsgi_app),
         )
