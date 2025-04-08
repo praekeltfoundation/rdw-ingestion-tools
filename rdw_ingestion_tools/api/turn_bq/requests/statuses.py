@@ -24,7 +24,7 @@ class Statuses:
         }
 
         status_generator = get_paginated(
-            self.client, url, page_size=100, **params
+            self.client, url, page_size=1000, **params
         )
 
         status = concatenate(status_generator)
