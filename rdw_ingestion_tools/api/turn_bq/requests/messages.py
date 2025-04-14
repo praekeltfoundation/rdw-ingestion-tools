@@ -23,13 +23,7 @@ class Messages:
             "to_timestamp": to_timestamp,
         }
 
-<<<<<<< HEAD
-        messages_generator = get_paginated(self.client, url, page_size=100, **params)
-=======
-        messages_generator = get_paginated(
-            self.client, url, page_size=1000, **params
-        )
->>>>>>> main
+        messages_generator = get_paginated(self.client, url, page_size=1000, **params)
 
         messages = concatenate(messages_generator)
 
