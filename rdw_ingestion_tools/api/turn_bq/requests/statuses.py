@@ -23,7 +23,13 @@ class Statuses:
             "to_timestamp": to_timestamp,
         }
 
+<<<<<<< HEAD
         status_generator = get_paginated(self.client, url, page_size=100, **params)
+=======
+        status_generator = get_paginated(
+            self.client, url, page_size=1000, **params
+        )
+>>>>>>> main
 
         status = concatenate(status_generator)
 

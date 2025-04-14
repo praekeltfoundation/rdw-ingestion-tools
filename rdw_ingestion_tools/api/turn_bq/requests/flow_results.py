@@ -51,7 +51,7 @@ class FlowResults:
         }
 
         flow_results_generator = get_paginated(
-            self.client, url, page_size=100, **params
+            self.client, url, page_size=1000, **params
         )
 
         flow_results = concatenate(flow_results_generator)

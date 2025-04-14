@@ -601,7 +601,7 @@ wheels = [
 
 [[package]]
 name = "rdw-ingestion-tools"
-version = "1.0.4.dev0"
+version = "1.0.5.dev0"
 source = { editable = "." }
 dependencies = [
     { name = "attrs" },

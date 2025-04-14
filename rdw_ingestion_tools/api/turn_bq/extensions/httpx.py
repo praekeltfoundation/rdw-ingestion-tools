@@ -4,7 +4,7 @@ from httpx import Client
 
 
 def get_paginated(
-    client: Client, url: str, page_size: int = 100, **kwargs: str | int
+    client: Client, url: str, page_size: int = 1000, **kwargs: str | int
 ) -> Iterator[dict]:
     """Paginate over Turn BQ API.
 
