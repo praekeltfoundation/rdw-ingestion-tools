@@ -1,10 +1,10 @@
 ---
-name: lint
+name: test
 
 on: [push, pull_request]  # yamllint disable-line rule:truthy
 
 jobs:
-  linting:
+  testing:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,8 +16,7 @@ jobs:
       - name: Install dependencies
         id: install-deps
         run: |
-          uv sync --only-group dev
-      - name: run linters
+          uv sync --dev
+      - name: test with pytest
         run: |
-          chmod +x .ci/lint.sh
-          uv run .ci/lint.sh
+          uv run pytest -v

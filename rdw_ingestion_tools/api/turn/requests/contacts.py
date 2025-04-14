@@ -13,9 +13,7 @@ class Contacts:
 
     client: Client
 
-    def get_contacts(
-        self, start: str, end: str, **kwargs: str | int
-    ) -> DataFrame:
+    def get_contacts(self, start: str, end: str, **kwargs: str | int) -> DataFrame:
         """Returns a pandas DataFrame of Turn Contacts.
 
         The endpoint supports time-base query parameters and

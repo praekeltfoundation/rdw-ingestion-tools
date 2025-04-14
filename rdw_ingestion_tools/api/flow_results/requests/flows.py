@@ -40,9 +40,7 @@ class Flows:
 
         for id in id_generator:
             url = id
-            response = self.client.get(
-                url, params=params, follow_redirects=True
-            )
+            response = self.client.get(url, params=params, follow_redirects=True)
             response.raise_for_status()
 
             attrs = response.json()["data"]["attributes"]
@@ -53,9 +51,7 @@ class Flows:
             flows["created"].append(attrs["created"])
             flows["modified"].append(attrs["modified"])
             flows["title"].append(attrs["title"])
-            flows["language"].append(
-                attrs["resources"][0]["schema"]["language"]
-            )
+            flows["language"].append(attrs["resources"][0]["schema"]["language"])
 
             questions_response = attrs["resources"][0]["schema"]["questions"]
 

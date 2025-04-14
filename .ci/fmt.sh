@@ -5,4 +5,4 @@ fmt() {
     ruff format "$@"
 }
 
-fmt rdw_ingestion_tools/ examples/
+fmt rdw_ingestion_tools/ examples/ tests/

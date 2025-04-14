@@ -16,9 +16,7 @@ class FlowResultsDataPackages:
 
     client: Client
 
-    def get_flow_results_data_packages_by_id(
-        self, stack_uuid: int
-    ) -> DataFrame:
+    def get_flow_results_data_packages_by_id(self, stack_uuid: int) -> DataFrame:
         """
         Returns a pandas DataFrame of Turn Flow Results Data Packages
         by stack_uuid
@@ -32,9 +30,7 @@ class FlowResultsDataPackages:
             url,
         )
 
-        flow_results_data_packages = concatenate(
-            flow_results_data_packages_generator
-        )
+        flow_results_data_packages = concatenate(flow_results_data_packages_generator)
 
         return flow_results_data_packages
 
@@ -58,8 +54,6 @@ class FlowResultsDataPackages:
             self.client, url, page_size=1000, **params
         )
 
-        flow_results_data_packages = concatenate(
-            flow_results_data_packages_generator
-        )
+        flow_results_data_packages = concatenate(flow_results_data_packages_generator)
 
         return flow_results_data_packages

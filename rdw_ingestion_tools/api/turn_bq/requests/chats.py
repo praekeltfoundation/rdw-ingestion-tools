@@ -37,9 +37,7 @@ class Chats:
             "to_timestamp": to_timestamp,
         }
 
-        chats_generator = get_paginated(
-            self.client, url, page_size=1000, **params
-        )
+        chats_generator = get_paginated(self.client, url, page_size=1000, **params)
 
         chats = concatenate(chats_generator)
 
