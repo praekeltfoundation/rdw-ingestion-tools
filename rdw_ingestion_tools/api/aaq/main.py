@@ -13,7 +13,7 @@ from . import client as default_client
 class pyAAQ:
     """A wrapper class for the various AAQ endpoints.
 
-    The client is configurable to it can be switched out in tests.
+    The client is configurable so it can be switched out in tests.
 
     """
 
