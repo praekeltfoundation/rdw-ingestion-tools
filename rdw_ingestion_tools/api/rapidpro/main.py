@@ -13,7 +13,11 @@ from . import client as default_client
 
 @define
 class pyRapid:
-    """A wrapper class for the various Rapidpro endpoints."""
+    """A wrapper class for the various Rapidpro endpoints.
+
+    The client is configurable so that it can be switched out in tests.
+
+    """
 
     client: Client = field(factory=lambda: default_client)
 

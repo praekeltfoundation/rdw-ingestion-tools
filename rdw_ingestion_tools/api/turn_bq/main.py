@@ -1,3 +1,6 @@
+from attrs import define, field
+from httpx import Client
+
 from api.turn_bq.requests.cards import Cards
 from api.turn_bq.requests.chats import Chats
 from api.turn_bq.requests.contacts import Contacts
@@ -8,16 +11,32 @@ from api.turn_bq.requests.flow_results_data_packages import (
 from api.turn_bq.requests.messages import Messages
 from api.turn_bq.requests.statuses import Statuses
 
-from . import client
+from . import client as default_client
 
 
+@define
 class pyTurnBQ:
-    """ """
+    """A wrapper class for the various Turn BQ endpoints.
 
-    cards = Cards(client)
-    contacts = Contacts(client)
-    chats = Chats(client)
-    messages = Messages(client)
-    flow_results_data_packages = FlowResultsDataPackages(client)
-    flow_results = FlowResults(client)
-    statuses = Statuses(client)
+    The client is configurable so that it can be switched out in tests.
+
+    """
+
+    client: Client = field(factory=lambda: default_client)
+
+    cards = field(init=False)
+    contacts = field(init=False)
+    chats = field(init=False)
+    messages = field(init=False)
+    flow_results_data_packages = field(init=False)
+    flow_results = field(init=False)
+    statuses = field(init=False)
+
+    def __attrs_post_init__(self):
+        self.cards = Cards(client=self.client)
+        self.contacts = Contacts(client=self.client)
+        self.chats = Chats(client=self.client)
+        self.messages = Messages(client=self.client)
+        self.flow_results_data_packages = FlowResultsDataPackages(client=self.client)
+        self.flow_results = FlowResults(client=self.client)
+        self.statuses = Statuses(client=self.client)
