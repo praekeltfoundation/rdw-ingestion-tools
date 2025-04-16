@@ -1,11 +1,11 @@
+from attrs import define, field
+from httpx import Client
+
 from api.flow_results.requests.flows import Flows
 from api.flow_results.requests.responses import Responses
 
 from . import client as default_client
 
-from httpx import Client
-
-from attrs import define, field
 
 @define
 class pyFlows:
