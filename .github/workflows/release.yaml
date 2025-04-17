@@ -15,18 +15,10 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: install pipx
-        run: |
-          sudo apt update
-          sudo apt install pipx
-          pipx ensurepath
-          sudo pipx ensurepath --global
-      - name: install poetry
-        run: |
-          pipx install poetry
+      - uses: astral-sh/setup-uv@v3
       - name: build release artifacts
         run: |
-          poetry build
+          uv build
       - name: create release
         uses: softprops/action-gh-release@v2
         with:
