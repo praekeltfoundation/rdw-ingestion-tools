@@ -50,23 +50,8 @@ RAPIDPRO_API_KEY="<secret>"
 RAPIDPRO_API_BASE_URL="<url>"
 
 ```
-- For survey:
 
-```
-SURVEY_API_KEY="<secret>"
-SURVEY_API_BASE_URL="<url>"
-
-```
-
-- For turn: (Original Data Export API)
-
-```
-TURN_API_KEY="<secret>"
-TURN_API_BASE_URL="<url>"
-
-```
-
-For the turn_bq API: (New Addition)
+- For the turn_bq API:
 
 ```
 TURN_BQ_API_KEY="<secret>"
