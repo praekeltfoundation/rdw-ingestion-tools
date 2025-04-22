@@ -19,10 +19,10 @@ class pyAAQV2:
 
     client: Client = field(factory=lambda: default_client)
 
-    contents = field(init=False)
-    urgency_rules = field(init=False)
-    urgency_queries = field(init=False)
-    queries = field(init=False)
+    contents: Contents = field(init=False)
+    urgency_rules: UrgencyRules = field(init=False)
+    urgency_queries: UrgencyQueries = field(init=False)
+    queries: Queries = field(init=False)
 
     def __attrs_post_init__(self):
         self.contents = Contents(self.client)

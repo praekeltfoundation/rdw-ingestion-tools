@@ -17,8 +17,8 @@ class pyFlows:
 
     client: Client = field(factory=lambda: default_client)
 
-    flows = field(init=False)
-    responses = field(init=False)
+    flows: Flows = field(init=False)
+    responses: Responses = field(init=False)
 
     def __attrs_post_init__(self):
         self.flows = Flows(client=self.client)

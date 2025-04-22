@@ -24,13 +24,13 @@ class pyTurnBQ:
 
     client: Client = field(factory=lambda: default_client)
 
-    cards = field(init=False)
-    contacts = field(init=False)
-    chats = field(init=False)
-    messages = field(init=False)
-    flow_results_data_packages = field(init=False)
-    flow_results = field(init=False)
-    statuses = field(init=False)
+    cards: Cards = field(init=False)
+    contacts: Contacts = field(init=False)
+    chats: Chats = field(init=False)
+    messages: Messages = field(init=False)
+    flow_results_data_packages: FlowResultsDataPackages = field(init=False)
+    flow_results: FlowResults = field(init=False)
+    statuses: Statuses = field(init=False)
 
     def __attrs_post_init__(self):
         self.cards = Cards(client=self.client)

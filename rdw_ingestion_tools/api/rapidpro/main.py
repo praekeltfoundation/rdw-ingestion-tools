@@ -21,12 +21,12 @@ class pyRapid:
 
     client: Client = field(factory=lambda: default_client)
 
-    contacts = field(init=False)
-    fields = field(init=False)
-    flow_starts = field(init=False)
-    flows = field(init=False)
-    groups = field(init=False)
-    runs = field(init=False)
+    contacts: Contacts = field(init=False)
+    fields: Fields = field(init=False)
+    flow_starts: FlowStarts = field(init=False)
+    flows: Flows = field(init=False)
+    groups: Groups = field(init=False)
+    runs: Runs = field(init=False)
 
     def __attrs_post_init__(self):
         self.contacts = Contacts(client=self.client)

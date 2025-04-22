@@ -17,8 +17,8 @@ class pyContent:
 
     client: Client = field(factory=lambda: default_client)
 
-    pageviews = field(init=False)
-    pages = field(init=False)
+    pageviews: PageViews = field(init=False)
+    pages: Pages = field(init=False)
 
     def __attrs_post_init__(self):
         self.pageviews = PageViews(client=self.client)
