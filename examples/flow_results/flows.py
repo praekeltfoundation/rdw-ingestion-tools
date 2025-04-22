@@ -1,5 +1,5 @@
 from api.flow_results import pyFlows
 
-flows = pyFlows.flows.get_flows()
+flows = pyFlows().flows.get_flows()
 
 print(flows.keys())

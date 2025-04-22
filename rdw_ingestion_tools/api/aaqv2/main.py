@@ -13,16 +13,16 @@ from . import client as default_client
 class pyAAQV2:
     """A wrapper class for the various AAQ V2 endpoints.
 
-    The client is configurable to it can be switched out in tests.
+    The client is configurable so it can be switched out in tests.
 
     """
 
     client: Client = field(factory=lambda: default_client)
 
-    contents = field(init=False)
-    urgency_rules = field(init=False)
-    urgency_queries = field(init=False)
-    queries = field(init=False)
+    contents: Contents = field(init=False)
+    urgency_rules: UrgencyRules = field(init=False)
+    urgency_queries: UrgencyQueries = field(init=False)
+    queries: Queries = field(init=False)
 
     def __attrs_post_init__(self):
         self.contents = Contents(self.client)
