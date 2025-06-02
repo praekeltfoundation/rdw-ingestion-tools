@@ -11,7 +11,9 @@ class Queries:
 
     client: Client
 
-    def get_queries(self, start_date: str, end_date: str) -> DataFrame:
+    def get_queries(
+        self, start_date: str, end_date: str, **kwargs: str | int
+    ) -> DataFrame:
         """Get a pandas DataFrame of queries.
 
         This endpoint supports time-based query parameters which can
@@ -29,6 +31,7 @@ class Queries:
         params = {
             "start_date": start_date,
             "end_date": end_date,
+            **kwargs,
         }
 
         queries_generator = get(self.client, url, **params)
