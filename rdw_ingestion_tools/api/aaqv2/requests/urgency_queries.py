@@ -14,7 +14,9 @@ class UrgencyQueries:
 
     client: Client
 
-    def get_urgency_queries(self, **kwargs: str | int) -> DataFrame:
+    def get_urgency_queries(
+        self, start_date: str, end_date: str, **kwargs: str | int
+    ) -> DataFrame:
         """Get a pandas DataFrame of urgency queries.
 
         This endpoint supports time-based query parameters which can
@@ -29,6 +31,12 @@ class UrgencyQueries:
 
         url = "urgency-queries"
 
-        urgency_queries_generator = get(self.client, url, **kwargs)
+        params = {
+            "start_date": start_date,
+            "end_date": end_date,
+            **kwargs,
+        }
+
+        urgency_queries_generator = get(self.client, url, **params)
 
         return DataFrame(urgency_queries_generator)
