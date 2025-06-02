@@ -7,7 +7,7 @@
     <img src="https://github.com/praekeltfoundation/rdw-ingestion-tools/workflows/lint/badge.svg" width="120" />
     <img src="https://github.com/praekeltfoundation/rdw-ingestion-tools/workflows/release/badge.svg" width="145" />
     <img src="https://github.com/praekeltfoundation/rdw-ingestion-tools/workflows/test/badge.svg" width="120" />
-    <img src="https://img.shields.io/badge/version-2.0.1.dev0-orange" width="145" />
+    <img src="https://img.shields.io/badge/version-2.0.1-orange" width="145" />
     <img src="https://img.shields.io/badge/license-MIT-blue" width="100" />
   </p>
 </div>
