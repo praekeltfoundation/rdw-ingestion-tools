@@ -18,5 +18,9 @@ def get(
     response = client.get(url, params={**kwargs})
     response.raise_for_status()
 
-    result: list[dict] = response.json()
-    yield from result
+    # Creating Polars frames using JSON input types sometimes throws polars.exceptions.ComputeError
+    # if the frame contains a date.
+    # This is the only input type I could find that reliably does not throw these errors for Datetime fields
+    result = response.text
+
+    return result
