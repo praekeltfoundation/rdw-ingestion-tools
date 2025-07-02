@@ -1,8 +1,11 @@
+from io import StringIO
+
 from attrs import define
 from httpx import Client
-from pandas import DataFrame
+from polars import LazyFrame, read_json
 
 from ..extensions.httpx import get
+from ..schemas.queries import query_extract_schema
 
 
 @define
@@ -13,7 +16,7 @@ class Queries:
 
     def get_queries(
         self, start_date: str, end_date: str, **kwargs: str | int
-    ) -> DataFrame:
+    ) -> LazyFrame:
         """Get a pandas DataFrame of queries.
 
         This endpoint supports time-based query parameters which can
@@ -36,4 +39,6 @@ class Queries:
 
         queries_generator = get(self.client, url, **params)
 
-        return DataFrame(queries_generator)
+        return read_json(
+            StringIO(queries_generator), schema=query_extract_schema
+        ).lazy()
