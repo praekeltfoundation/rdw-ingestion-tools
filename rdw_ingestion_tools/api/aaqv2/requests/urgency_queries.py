@@ -1,8 +1,6 @@
-from io import StringIO
-
 from attrs import define
 from httpx import Client
-from polars import LazyFrame, read_json
+from polars import LazyFrame
 
 from ..extensions.httpx import get
 from ..schemas.urgency_queries import urgency_queries_schema
@@ -42,6 +40,4 @@ class UrgencyQueries:
 
         urgency_queries_generator = get(self.client, url, **params)
 
-        return read_json(
-            StringIO(urgency_queries_generator), schema=urgency_queries_schema
-        ).lazy()
+        return LazyFrame(urgency_queries_generator, schema=urgency_queries_schema)

@@ -1,8 +1,6 @@
-from io import StringIO
-
 from attrs import define
 from httpx import Client
-from polars import LazyFrame, read_json
+from polars import LazyFrame
 
 from ..extensions.httpx import get
 from ..schemas.urgency_rules import urgency_rules_schema
@@ -30,6 +28,4 @@ class UrgencyRules:
 
         urgency_rules_generator = get(self.client, url, **kwargs)
 
-        return read_json(
-            StringIO(urgency_rules_generator), schema=urgency_rules_schema
-        ).lazy()
+        return LazyFrame(urgency_rules_generator, schema=urgency_rules_schema)

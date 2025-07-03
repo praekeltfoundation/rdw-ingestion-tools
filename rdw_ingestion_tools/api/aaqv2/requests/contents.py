@@ -1,8 +1,9 @@
 from attrs import define
 from httpx import Client
-from pandas import DataFrame
+from polars import LazyFrame
 
 from ..extensions.httpx import get
+from ..schemas.contents import contents_schema
 
 
 @define
@@ -11,7 +12,7 @@ class Contents:
 
     client: Client
 
-    def get_contents(self, **kwargs: str | int) -> DataFrame:
+    def get_contents(self, **kwargs: str | int) -> LazyFrame:
         """Get a pandas DataFrame of contents.
 
         No time-based query parameters are supported for this endpoint.
@@ -26,4 +27,4 @@ class Contents:
 
         # IDI return weird stuff in the new API. Let's see if it
         # has what we need to convert to a df.
-        return DataFrame(contents_generator)
+        return LazyFrame(contents_generator, schema=contents_schema)

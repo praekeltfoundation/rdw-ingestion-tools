@@ -1,11 +1,9 @@
-from io import StringIO
-
 from attrs import define
 from httpx import Client
-from polars import LazyFrame, read_json
+from polars import LazyFrame
 
 from ..extensions.httpx import get
-from ..schemas.queries import query_extract_schema
+from ..schemas.queries import queries_schema
 
 
 @define
@@ -39,6 +37,4 @@ class Queries:
 
         queries_generator = get(self.client, url, **params)
 
-        return read_json(
-            StringIO(queries_generator), schema=query_extract_schema
-        ).lazy()
+        return LazyFrame(queries_generator, schema=queries_schema)

@@ -1,9 +1,10 @@
-from api import concatenate
+from api import concatenate_to_lf
 from attrs import define
 from httpx import Client
-from pandas import DataFrame
+from polars import LazyFrame
 
 from ..extensions.httpx import get_paginated
+from ..schemas.contacts import contacts_schema
 
 
 @define
@@ -12,7 +13,7 @@ class Contacts:
 
     client: Client
 
-    def get_contacts_by_id(self, contact_id: int) -> DataFrame:
+    def get_contacts_by_id(self, contact_id: int) -> LazyFrame:
         """Returns a pandas DataFrame of Turn Contacts by contact_id"""
 
         url = f"contacts/{contact_id}"
@@ -22,13 +23,13 @@ class Contacts:
             url,
         )
 
-        contacts = concatenate(contacts_generator)
+        contacts = concatenate_to_lf(contacts_generator, contacts_schema)
 
         return contacts
 
     def get_contacts_by_updated_at(
         self, from_timestamp: str, to_timestamp: str
-    ) -> DataFrame:
+    ) -> LazyFrame:
         """Returns a pandas DataFrame of Turn Contacts by updated_at."""
         url = "contacts/"
 
@@ -39,6 +40,6 @@ class Contacts:
 
         contacts_generator = get_paginated(self.client, url, page_size=1000, **params)
 
-        contacts = concatenate(contacts_generator)
+        contacts = concatenate_to_lf(contacts_generator, contacts_schema)
 
         return contacts
