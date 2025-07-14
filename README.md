@@ -116,7 +116,7 @@ pyS3.s3.get_filenames(bucket=bucket, prefix=prefix)
 ```
 
 ### Running an example locally
-1. `uv sync`
+1. `uv sync` or `uv sync --extra polars` for examples that use Polars (Turn BQ and AAQV2)
 2. `uv run --env-file .env examples/{path}` e.g. `uv run --env-file .env examples/turn_bq/cards.py`
 
 #### Running tests
