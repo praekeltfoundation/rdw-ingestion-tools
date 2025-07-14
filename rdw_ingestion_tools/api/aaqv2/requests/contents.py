@@ -25,6 +25,4 @@ class Contents:
 
         contents_generator = get(self.client, url, **kwargs)
 
-        # IDI return weird stuff in the new API. Let's see if it
-        # has what we need to convert to a df.
         return LazyFrame(contents_generator, schema=contents_schema)
