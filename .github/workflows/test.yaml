@@ -16,7 +16,7 @@ jobs:
       - name: Install dependencies
         id: install-deps
         run: |
-          uv sync --dev
+          uv sync --dev --extra polars
       - name: test with pytest
         run: |
           uv run pytest -v
