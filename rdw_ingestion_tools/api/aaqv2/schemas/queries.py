@@ -1,4 +1,4 @@
-from polars import Field, Float64, Int64, List, String, Struct
+from polars import Field, Float64, Int64, List, Schema, String, Struct
 
 search_results = Struct(
     [
@@ -78,13 +78,15 @@ response_feedback = Struct(
     ]
 )
 
-queries_schema = {
-    "content_feedback": List(content_feedback),
-    "query_datetime_utc": String,
-    "query_id": Int64,
-    "query_metadata": Struct,
-    "query_text": String,
-    "response": List(query_response),
-    "response_feedback": List(response_feedback),
-    "workspace_id": Int64,
-}
+queries_schema = Schema(
+    {
+        "content_feedback": List(content_feedback),
+        "query_datetime_utc": String,
+        "query_id": Int64,
+        "query_metadata": Struct([]),
+        "query_text": String,
+        "response": List(query_response),
+        "response_feedback": List(response_feedback),
+        "workspace_id": Int64,
+    }
+)

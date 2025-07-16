@@ -1,12 +1,4 @@
-from polars import (
-    Boolean,
-    Float64,
-    Int64,
-    List,
-    String,
-    Struct,
-    Utf8,
-)
+from polars import Boolean, Float64, Int64, List, Schema, String, Struct, Utf8
 
 urgency_rule = Struct(
     {
@@ -31,10 +23,12 @@ urgency_query_response = Struct(
     }
 )
 
-urgency_queries_schema = {
-    "message_datetime_utc": String,
-    "message_text": String,
-    "response": urgency_query_response,
-    "urgency_query_id": Int64,
-    "workspace_id": Int64,
-}
+urgency_queries_schema = Schema(
+    {
+        "message_datetime_utc": String,
+        "message_text": String,
+        "response": urgency_query_response,
+        "urgency_query_id": Int64,
+        "workspace_id": Int64,
+    }
+)
