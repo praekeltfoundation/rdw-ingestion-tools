@@ -43,17 +43,18 @@ class Content(AAQV2ModelBase):
 
     """
 
-    content_title: str
-    content_text: str
-    content_tags: list
     content_metadata: dict
+    content_tags: list
+    content_text: str
+    content_title: str
     is_archived: bool
     content_id: int
-    user_id: int
+    display_number: int
     created_datetime_utc: str
-    updated_datetime_utc: str
-    positive_votes: int
     negative_votes: int
+    positive_votes: int
+    updated_datetime_utc: str
+    workspace_id: int
 
 
 @define(frozen=True, kw_only=True)
@@ -69,12 +70,25 @@ class UrgencyRule(AAQV2ModelBase):
 
     """
 
+    urgency_rule_metadata: dict
+    urgency_rule_text: str
     created_datetime_utc: str
     updated_datetime_utc: str
     urgency_rule_id: int
-    urgency_rule_metadata: dict
-    urgency_rule_text: str
-    user_id: int
+    workspace_id: int
+
+
+@define(frozen=True, kw_only=True)
+class SearchResults(AAQV2ModelBase):
+    """
+    A subtype in the Query type.
+
+    """
+
+    title: str
+    text: str
+    id: int
+    distance: float
 
 
 @define(frozen=True, kw_only=True)
@@ -84,11 +98,10 @@ class QueryResponse(AAQV2ModelBase):
 
     """
 
-    response_id: int
-    # Figure out what type this is
-    search_results: Any
-    llm_response: str | None
+    llm_response: str
     response_datetime_utc: str
+    response_id: int
+    search_results: dict[str, SearchResults]
 
 
 @define(frozen=True, kw_only=True)
@@ -98,10 +111,10 @@ class ResponseFeedback(AAQV2ModelBase):
 
     """
 
+    feedback_datetime_utc: str
     feedback_id: int
     feedback_sentiment: str
     feedback_text: str | None
-    feedback_datetime_utc: str
 
 
 @define(frozen=True, kw_only=True)
@@ -112,6 +125,10 @@ class ContentFeedback(ResponseFeedback):
     """
 
     content_id: int
+    feedback_datetime_utc: str
+    feedback_id: int
+    feedback_sentiment: str
+    feedback_text: str
 
 
 @define(frozen=True, kw_only=True)
@@ -128,16 +145,27 @@ class Query(AAQV2ModelBase):
 
     """
 
-    query_id: int
-    user_id: int
-    query_text: str
-    query_metadata: Any
+    content_feedback: Sequence[ResponseFeedback]
     query_datetime_utc: str
+    query_id: int
+    query_metadata: Any
+    query_text: str
     response: Sequence[QueryResponse]
     response_feedback: Sequence[ResponseFeedback]
     # Similar to the above except content feedback also has a content id.
     # Just need to account for this.
-    content_feedback: Sequence[ResponseFeedback]
+    workspace_id: int
+
+
+@define(frozen=True, kw_only=True)
+class UrgencyQueryResponseDetails(AAQV2ModelBase):
+    """
+    A subtype in the UrgencyQuery type.
+
+    """
+
+    distance: float
+    urgency_rule: str
 
 
 @define(frozen=True, kw_only=True)
@@ -147,11 +175,11 @@ class UrgencyQueryResponseExtract(AAQV2ModelBase):
 
     """
 
-    urgency_response_id: int
+    details: dict[str, UrgencyQueryResponseDetails]
     is_urgent: bool
     matched_rules: Sequence[str | None]
-    details: Any
     response_datetime_utc: str
+    urgency_response_id: int
 
 
 @define(frozen=True, kw_only=True)
@@ -167,8 +195,8 @@ class UrgencyQuery(AAQV2ModelBase):
 
     """
 
-    urgency_query_id: int
-    user_id: int
-    message_text: str
     message_datetime_utc: str
+    message_text: str
     response: UrgencyQueryResponseExtract | None
+    urgency_query_id: int
+    workspace_id: int

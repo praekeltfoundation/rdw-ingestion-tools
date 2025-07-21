@@ -1,9 +1,10 @@
-from api import concatenate
+from api import concatenate_to_lf
 from attrs import define
 from httpx import Client
-from pandas import DataFrame
+from polars import LazyFrame
 
 from ..extensions.httpx import get_paginated
+from ..schemas.messages import messages_schema
 
 
 @define
@@ -14,7 +15,7 @@ class Messages:
 
     def get_messages_by_updated_at(
         self, from_timestamp: str, to_timestamp: str
-    ) -> DataFrame:
+    ) -> LazyFrame:
         """Returns a pandas DataFrame of Turn Messages by updated_at."""
         url = "messages/"
 
@@ -25,6 +26,6 @@ class Messages:
 
         messages_generator = get_paginated(self.client, url, page_size=1000, **params)
 
-        messages = concatenate(messages_generator)
+        messages = concatenate_to_lf(messages_generator, messages_schema)
 
         return messages

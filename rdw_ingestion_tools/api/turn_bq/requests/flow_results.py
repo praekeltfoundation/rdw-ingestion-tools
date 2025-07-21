@@ -1,9 +1,10 @@
-from api import concatenate
+from api import concatenate_to_lf
 from attrs import define
 from httpx import Client
-from pandas import DataFrame
+from polars import LazyFrame
 
 from ..extensions.httpx import get_paginated
+from ..schemas.flow_results import flow_results_schema
 
 
 @define
@@ -16,7 +17,7 @@ class FlowResults:
 
     client: Client
 
-    def get_flow_results_by_id(self, stack_uuid: int) -> DataFrame:
+    def get_flow_results_by_id(self, stack_uuid: int) -> LazyFrame:
         """
         Returns a pandas DataFrame of Turn Flow Results
         by stack_uuid
@@ -30,13 +31,13 @@ class FlowResults:
             url,
         )
 
-        flow_results = concatenate(flow_results_generator)
+        flow_results = concatenate_to_lf(flow_results_generator, flow_results_schema)
 
         return flow_results
 
     def get_flow_results_by_updated_at(
         self, from_timestamp: str, to_timestamp: str
-    ) -> DataFrame:
+    ) -> LazyFrame:
         """
         Returns a pandas DataFrame of Turn Flow Results
         by updated_at.
@@ -54,6 +55,6 @@ class FlowResults:
             self.client, url, page_size=1000, **params
         )
 
-        flow_results = concatenate(flow_results_generator)
+        flow_results = concatenate_to_lf(flow_results_generator, flow_results_schema)
 
         return flow_results

@@ -1,0 +1,33 @@
+from polars import (
+    Boolean,
+    Int64,
+    String,
+)
+
+chats_schema = {
+    "record_created_at": String,
+    "partition_timestamp": String,
+    "id": Int64,
+    "icon": String,
+    "owner": String,
+    "state": String,
+    "state_reason": String,
+    "title": String,
+    "type": String,
+    "invite_link": String,
+    "uuid": String,
+    "timestamp": String,
+    "inbound_timestamp": String,
+    "outbound_timestamp": String,
+    "unread_count": Int64,
+    "pinned_at": String,
+    "is_culled": Boolean,
+    "assigned_to_timestamp": String,
+    "is_blocked": Boolean,
+    "number_id": Int64,
+    "last_message_id": Int64,
+    "assigned_to_id": Int64,
+    "contact_id": Int64,
+    "inserted_at": String,
+    "updated_at": String,
+}

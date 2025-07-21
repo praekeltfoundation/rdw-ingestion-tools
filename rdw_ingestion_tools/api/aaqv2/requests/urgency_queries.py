@@ -1,8 +1,9 @@
 from attrs import define
 from httpx import Client
-from pandas import DataFrame
+from polars import LazyFrame
 
 from ..extensions.httpx import get
+from ..schemas.urgency_queries import urgency_queries_schema
 
 
 @define
@@ -16,8 +17,8 @@ class UrgencyQueries:
 
     def get_urgency_queries(
         self, start_date: str, end_date: str, **kwargs: str | int
-    ) -> DataFrame:
-        """Get a pandas DataFrame of urgency queries.
+    ) -> LazyFrame:
+        """Get a Polars LazyFrame of urgency queries.
 
         This endpoint supports time-based query parameters which can
         be passed to this method as kwargs in the following example:
@@ -39,4 +40,4 @@ class UrgencyQueries:
 
         urgency_queries_generator = get(self.client, url, **params)
 
-        return DataFrame(urgency_queries_generator)
+        return LazyFrame(urgency_queries_generator, schema=urgency_queries_schema)
