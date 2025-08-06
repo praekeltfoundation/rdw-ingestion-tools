@@ -31,7 +31,7 @@ def concatenate(
 
     """
     try:
-        df = concat([json_normalize(obj, sep="_") for obj in objs])
+        df = concat([json_normalize(obj, separator="_") for obj in objs])
     except ValueError:
         df = DataFrame()
 
