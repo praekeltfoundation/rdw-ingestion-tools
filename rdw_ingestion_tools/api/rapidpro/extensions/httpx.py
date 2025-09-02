@@ -1,4 +1,5 @@
 from collections.abc import Iterator
+from urllib.parse import unquote
 
 from httpx import Client
 
@@ -15,8 +16,10 @@ def get_paginated(
 
     """
 
+    params={**kwargs}
+
     while True:
-        response = client.get(url, params={**kwargs})
+        response = client.get(url, params=params)
         response.raise_for_status()
 
         data: dict = response.json()
@@ -25,6 +28,8 @@ def get_paginated(
         yield from results
 
         try:
-            url = data["next"].split("/v2/")[1]
+            cursor = data["next"].split("&cursor=")[1]
+            decoded_cursor = unquote(cursor)
+            params["cursor"]=decoded_cursor
         except AttributeError:
             break
