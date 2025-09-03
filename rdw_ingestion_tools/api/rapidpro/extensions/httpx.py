@@ -16,7 +16,7 @@ def get_paginated(
 
     """
 
-    params={**kwargs}
+    params = {**kwargs}
 
     while True:
         response = client.get(url, params=params)
@@ -30,6 +30,6 @@ def get_paginated(
         try:
             cursor = data["next"].split("&cursor=")[1]
             decoded_cursor = unquote(cursor)
-            params["cursor"]=decoded_cursor
+            params["cursor"] = decoded_cursor
         except AttributeError:
             break
