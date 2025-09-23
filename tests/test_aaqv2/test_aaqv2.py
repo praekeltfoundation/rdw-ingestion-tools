@@ -1,18 +1,17 @@
 import typing
 
 import pytest
-from api.aaqv2 import pyAAQV2
 from polars import LazyFrame
 from polars.exceptions import SchemaError
 from polars.testing import assert_frame_equal
 
+from rdw_ingestion_tools.api.aaqv2 import pyAAQV2
 from rdw_ingestion_tools.api.aaqv2.schemas.contents import contents_schema
 from rdw_ingestion_tools.api.aaqv2.schemas.queries import queries_schema
 from rdw_ingestion_tools.api.aaqv2.schemas.urgency_queries import urgency_queries_schema
 from rdw_ingestion_tools.api.aaqv2.schemas.urgency_rules import urgency_rules_schema
-
-from .fake_aaqv2.api import FakeAAQV2
-from .fake_aaqv2.models import (
+from tests.test_aaqv2.fake_aaqv2.api import FakeAAQV2
+from tests.test_aaqv2.fake_aaqv2.models import (
     Content,
     ContentFeedback,
     Query,
