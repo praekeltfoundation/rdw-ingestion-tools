@@ -7,17 +7,29 @@ from rdw_ingestion_tools.api import concatenate_to_string_lazyframe, get_polars_
 def test_get_polars_schema_empty_data():
     """
     Tests that schemas generated for empty responses are empty dictionaries.
+
     """
-    data = [{}]
-    schema = get_polars_schema(object_columns=[], data=data)
+    schema = get_polars_schema(object_columns=[], data=[])
 
     assert schema == {}
 
 
+def test_concatenate_to_string_lazyframe_empty_response():
+    """
+    Tests that concatenate_to_string_lazyframe returns an empty LazyFrame for
+    empty response data.
+
+    """
+    lf = concatenate_to_string_lazyframe(objs=[], object_columns=[])
+
+    assert_frame_equal(lf, LazyFrame(schema={}))
+
+
 def test_get_polars_schema_primitive_types():
     """
-    Tests that schemas generated from response data use type `String`
+    Schemas generated from response data use type `String`
     for all primitive types.
+
     """
     data = [
         {
@@ -48,6 +60,7 @@ def test_get_polars_schema_list_types():
     """
     Tests that generated schemas from response data use type `Object`
     for list columns.
+
     """
     data = [{"col1": [1, 2, 3], "col2": [{"key": "value"}], "col3": False}]
 
@@ -62,6 +75,7 @@ def test_get_polars_schema_json_types():
     """
     Tests that generated schemas from response data with JSON columns
     normalise the column names in the schema.
+
     """
     data = [{"col1": {"key": {"inner_key": "value"}}, "col2": {"key": "value"}}]
 
@@ -76,6 +90,7 @@ def test_concatenate_to_string_lazyframe():
     """
     Tests that response data is concatenated and normalised into LazyFrames
     with column type `String`.
+
     """
     data = [
         {"col1": 1, "col2": [1, 2, 3], "col3": {"key": "value1"}},
@@ -93,15 +108,3 @@ def test_concatenate_to_string_lazyframe():
     )
 
     assert_frame_equal(lf, expected_lf)
-
-
-def test_concatenate_to_string_lazyframe_empty_response():
-    """
-    Tests that concatenate_to_string_lazyframe returns an empty LazyFrame for
-    empty response data.
-    """
-    data = [{}]
-
-    lf = concatenate_to_string_lazyframe(objs=data, object_columns=[])
-
-    assert_frame_equal(lf, LazyFrame(data=[[]], schema={}))

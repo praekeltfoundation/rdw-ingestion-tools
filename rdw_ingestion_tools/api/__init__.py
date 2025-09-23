@@ -67,7 +67,9 @@ def concatenate_to_lazyframe(
     return lf
 
 
-def get_polars_schema(object_columns: list[str], data) -> dict[str, Object]:
+def get_polars_schema(
+    object_columns: list[str], data: list[dict[str, Object]]
+) -> dict[str, Object]:
     """
     Creates a normalised LazyFrame and uses the schema to generate a schema
     dictionary using the column names.

@@ -27,6 +27,7 @@ def mock_client(mocker):
 def test_get_paginated_empty_response(mock_client, mock_response):
     """
     Tests that the pagination function can handle an empty response.
+
     """
     mock_response.json.return_value = {"next": None, "previous": None, "results": []}
 
@@ -39,13 +40,17 @@ def test_get_paginated_empty_response(mock_client, mock_response):
 
 def test_get_paginated_cursor_usage(mock_client, mock_response):
     """
-    Tests that the pagination function call sthe API with the expected cursor
+    Tests that the pagination function call sthe API with the expected cursor.
+
     """
+
+    # First mock response object
     mock_response.json.return_value = {
         "results": [{"id": 1}],
         "next": "https://test.com.json?after=2023-01-01+00%3A00%3A00&before=2023-03-01+00%3A00%3A50&cursor=cD0yMDIzLTEwLTI3VDEwJTNBMzAlM0EwMC4wMDAwMDBa&extra_param=1",
     }
 
+    # Second mock response object
     mock_response2 = Mock()
     mock_response2.status_code = 200
     mock_response2.raise_for_status.return_value = None
@@ -70,6 +75,7 @@ def test_get_paginated_cursor_usage(mock_client, mock_response):
 def test_get_paginated_additional_kwargs(mock_client, mock_response):
     """
     Tests that the pagination function can handle additional kwargs.
+
     """
     mock_response.json.return_value = {"results": [{"id": 3}], "next": None}
 
