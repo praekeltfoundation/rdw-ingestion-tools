@@ -15,7 +15,6 @@ def get_paginated(
     pages are left to return.
 
     """
-
     params = {**kwargs}
 
     while True:
@@ -28,7 +27,7 @@ def get_paginated(
         yield from results
 
         try:
-            cursor = data["next"].split("&cursor=")[1]
+            cursor = data["next"].split("&cursor=")[1].split("&")[0]
             decoded_cursor = unquote(cursor)
             params["cursor"] = decoded_cursor
         except AttributeError:
