@@ -1,8 +1,8 @@
 from attrs import define
 from httpx import Client
-from pandas import DataFrame
+from polars import LazyFrame
 
-from api import concatenate
+from api import concatenate_to_string_lazyframe
 
 from ..extensions.httpx import get_paginated
 
@@ -13,22 +13,28 @@ class Contacts:
 
     client: Client
 
-    def get_contacts(self, **kwargs: str | int) -> DataFrame:
-        """Get a pandas DataFrame of Rapidpro contacts.
+    def get_contacts(
+        self, start_datetime: str, end_datetime: str, **kwargs: str | int
+    ) -> LazyFrame:
+        """Get a Polars LazyFrame of Rapidpro contacts.
 
         This endpoint supports time-based filtering that allows
         to fetch results between two date parameters. Example:
 
         pyRapid.contacts.get_contacts(
-            before="2023-01-02T00:00:00",
-            after="2023-01-01T00:00:00"
+            end_datetime="2023-01-02T00:00:00",
+            start_datetime="2023-01-01T00:00:00"
             )
 
         """
         url = "contacts.json"
 
-        contacts_generator = get_paginated(self.client, url, **kwargs)
+        contacts_generator = get_paginated(
+            self.client, url, after=start_datetime, before=end_datetime, **kwargs
+        )
 
-        contacts = concatenate(contacts_generator)
+        contacts = concatenate_to_string_lazyframe(
+            contacts_generator, object_columns=["urns", "groups"]
+        )
 
         return contacts
