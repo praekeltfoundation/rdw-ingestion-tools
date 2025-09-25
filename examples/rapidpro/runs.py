@@ -1,7 +1,7 @@
 from api.rapidpro import pyRapid
 
 runs = pyRapid().runs.get_runs(
-    before="2024-10-01 01:30:00", after="2024-10-01 01:00:00"
+    end_datetime="2024-06-22 00:00:10", start_datetime="2024-06-22 00:00:00"
 )
 
-runs.head(5)
+print(runs.collect())

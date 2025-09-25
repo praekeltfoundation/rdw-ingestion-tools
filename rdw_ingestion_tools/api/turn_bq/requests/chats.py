@@ -1,4 +1,4 @@
-from api import concatenate_to_lf
+from api import concatenate_to_lazyframe
 from attrs import define
 from httpx import Client
 from polars import LazyFrame
@@ -14,7 +14,7 @@ class Chats:
     client: Client
 
     def get_chats_by_id(self, chat_id: int) -> LazyFrame:
-        """Returns a pandas DataFrame of Turn Chats by chat_id"""
+        """Returns a Polars LazyFrame of Turn Chats by chat_id"""
 
         url = f"chats/{chat_id}"
 
@@ -23,14 +23,14 @@ class Chats:
             url,
         )
 
-        chats = concatenate_to_lf(chats_generator, chats_schema)
+        chats = concatenate_to_lazyframe(chats_generator, chats_schema)
 
         return chats
 
     def get_chats_by_updated_at(
         self, from_timestamp: str, to_timestamp: str
     ) -> LazyFrame:
-        """Returns a pandas DataFrame of Turn Chats by updated_at."""
+        """Returns a Polars LazyFrame of Turn Chats by updated_at."""
         url = "chats/"
 
         params = {
@@ -40,6 +40,6 @@ class Chats:
 
         chats_generator = get_paginated(self.client, url, page_size=1000, **params)
 
-        chats = concatenate_to_lf(chats_generator, chats_schema)
+        chats = concatenate_to_lazyframe(chats_generator, chats_schema)
 
         return chats

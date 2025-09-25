@@ -1,4 +1,4 @@
-from api import concatenate_to_lf
+from api import concatenate_to_lazyframe
 from attrs import define
 from httpx import Client
 from polars import LazyFrame
@@ -14,23 +14,23 @@ class Cards:
     client: Client
 
     def get_cards(self) -> LazyFrame:
-        """Returns a pandas DataFrame of Turn Cards"""
+        """Returns a Polars LazyFrame of Turn Cards"""
 
         url = "cards/"
 
         cards_generator = get_paginated(self.client, url)
 
-        cards = concatenate_to_lf(cards_generator, cards_schema)
+        cards = concatenate_to_lazyframe(cards_generator, cards_schema)
 
         return cards
 
     def get_cards_by_id(self, card_id: int) -> LazyFrame:
-        """Returns a pandas DataFrame of Turn Cards by card_id"""
+        """Returns a Polars LazyFrame of Turn Cards by card_id"""
 
         url = f"cards/{card_id}"
 
         cards_generator = get_paginated(self.client, url)
 
-        cards = concatenate_to_lf(cards_generator, cards_schema)
+        cards = concatenate_to_lazyframe(cards_generator, cards_schema)
 
         return cards

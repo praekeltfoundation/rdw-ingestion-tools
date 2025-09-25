@@ -1,8 +1,8 @@
 from attrs import define
 from httpx import Client
-from pandas import DataFrame
+from polars import LazyFrame
 
-from api import concatenate
+from api import concatenate_to_string_lazyframe
 
 from ..extensions.httpx import get_paginated
 
@@ -13,8 +13,8 @@ class Groups:
 
     client: Client
 
-    def get_groups(self, **kwargs: str | int) -> DataFrame:
-        """Get a pandas DataFrame of Rapidpro groups.
+    def get_groups(self, **kwargs: str | int) -> LazyFrame:
+        """Get a Polars LazyFrame of Rapidpro groups.
 
         This endpoint does not support time-based filtering and
         can be called as:
@@ -26,6 +26,6 @@ class Groups:
 
         groups_generator = get_paginated(self.client, url, **kwargs)
 
-        groups = concatenate(groups_generator)
+        groups = concatenate_to_string_lazyframe(groups_generator, object_columns=[])
 
         return groups

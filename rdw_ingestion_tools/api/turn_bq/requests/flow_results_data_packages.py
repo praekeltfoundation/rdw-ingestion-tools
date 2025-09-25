@@ -1,4 +1,4 @@
-from api import concatenate_to_lf
+from api import concatenate_to_lazyframe
 from attrs import define
 from httpx import Client
 from polars import LazyFrame
@@ -19,7 +19,7 @@ class FlowResultsDataPackages:
 
     def get_flow_results_data_packages_by_id(self, stack_uuid: int) -> LazyFrame:
         """
-        Returns a pandas DataFrame of Turn Flow Results Data Packages
+        Returns a Polars LazyFrame of Turn Flow Results Data Packages
         by stack_uuid
 
         """
@@ -31,7 +31,7 @@ class FlowResultsDataPackages:
             url,
         )
 
-        flow_results_data_packages = concatenate_to_lf(
+        flow_results_data_packages = concatenate_to_lazyframe(
             flow_results_data_packages_generator, flow_results_data_packages_schema
         )
 
@@ -41,7 +41,7 @@ class FlowResultsDataPackages:
         self, from_timestamp: str, to_timestamp: str
     ) -> LazyFrame:
         """
-        Returns a pandas DataFrame of Turn Flow Results Data Packages
+        Returns a Polars LazyFrame of Turn Flow Results Data Packages
         by updated_at.
 
         """
@@ -57,7 +57,7 @@ class FlowResultsDataPackages:
             self.client, url, page_size=1000, **params
         )
 
-        flow_results_data_packages = concatenate_to_lf(
+        flow_results_data_packages = concatenate_to_lazyframe(
             flow_results_data_packages_generator, flow_results_data_packages_schema
         )
 

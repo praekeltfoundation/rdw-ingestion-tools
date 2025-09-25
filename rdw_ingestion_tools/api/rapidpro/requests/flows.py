@@ -1,8 +1,8 @@
 from attrs import define
 from httpx import Client
-from pandas import DataFrame
+from polars import LazyFrame
 
-from api import concatenate
+from api import concatenate_to_string_lazyframe
 
 from ..extensions.httpx import get_paginated
 
@@ -13,8 +13,8 @@ class Flows:
 
     client: Client
 
-    def get_flows(self, **kwargs: str | int) -> DataFrame:
-        """Get a pandas DataFrame of Rapidpro flows.
+    def get_flows(self, **kwargs: str | int) -> LazyFrame:
+        """Get a Polars LazyFrame of Rapidpro flows.
 
         This endpoint does not support time-based filtering and
         can be called as:
@@ -26,6 +26,8 @@ class Flows:
 
         flows_generator = get_paginated(self.client, url, **kwargs)
 
-        flows = concatenate(flows_generator)
+        flows = concatenate_to_string_lazyframe(
+            flows_generator, object_columns=["labels", "results", "parent_refs"]
+        )
 
         return flows

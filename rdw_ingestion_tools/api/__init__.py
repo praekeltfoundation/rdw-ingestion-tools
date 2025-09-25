@@ -2,7 +2,15 @@ import os
 from collections.abc import Iterator
 
 from pandas import DataFrame
-from polars import LazyFrame, concat, json_normalize
+from pandas import json_normalize as pd_json_normalize
+from polars import (
+    LazyFrame,
+    Object,
+    String,
+    col,
+    concat,
+    json_normalize,
+)
 
 # https://github.com/astral-sh/ruff/issues/3388
 from typing_extensions import Never  # noqa: UP035
@@ -31,14 +39,14 @@ def concatenate(
 
     """
     try:
-        df = concat([json_normalize(obj, sep="_") for obj in objs])
+        df = concat([pd_json_normalize(obj, sep="_") for obj in objs])
     except ValueError:
         df = DataFrame()
 
     return df
 
 
-def concatenate_to_lf(
+def concatenate_to_lazyframe(
     objs: list[dict] | dict[Never, Never] | list[Never] | Iterator, schema: dict
 ) -> LazyFrame:
     """
@@ -55,5 +63,48 @@ def concatenate_to_lf(
         ).lazy()
     except ValueError:
         lf = LazyFrame(schema=schema)
+
+    return lf
+
+
+def get_polars_schema(
+    object_columns: list[str], data: list[dict[str, Object]]
+) -> dict[str, Object]:
+    """
+    Creates a normalised LazyFrame and uses the schema to generate a schema
+    dictionary using the column names.
+    Columns that are `list` types need to be type `Object` before they can be cast
+    to string.
+    All other column types can be cast directly to string using the schema generated.
+    """
+    # Create a dataframe to use to build the schema
+    columns = (
+        json_normalize(data, separator="_", infer_schema_length=None)
+        .lazy()
+        .collect_schema()
+        .names()
+    )
+    schema = {
+        column: (Object if column in object_columns else String) for column in columns
+    }
+
+    return schema
+
+
+def concatenate_to_string_lazyframe(
+    objs: list[dict] | dict[Never, Never] | list[Never] | Iterator,
+    object_columns: list[str],
+) -> LazyFrame:
+    """
+    Flattens JSON data. Returns a LazyFrame with String columns.
+    """
+    data = list(objs)
+
+    schema = get_polars_schema(data=data, object_columns=object_columns)
+    lf = (
+        json_normalize(data, separator="_", schema=schema)
+        .lazy()
+        .with_columns(col(Object).map_elements(lambda x: str(x), return_dtype=String))
+    )
 
     return lf

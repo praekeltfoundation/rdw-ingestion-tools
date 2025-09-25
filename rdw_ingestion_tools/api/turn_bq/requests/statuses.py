@@ -1,4 +1,4 @@
-from api import concatenate_to_lf
+from api import concatenate_to_lazyframe
 from attrs import define
 from httpx import Client
 from polars import LazyFrame
@@ -16,7 +16,7 @@ class Statuses:
     def get_statuses_by_updated_at(
         self, from_timestamp: str, to_timestamp: str
     ) -> LazyFrame:
-        """Returns a pandas DataFrame of Turn Statuses by updated_at."""
+        """Returns a Polars LazyFrame of Turn Statuses by updated_at."""
         url = "statuses/"
 
         params = {
@@ -26,6 +26,6 @@ class Statuses:
 
         status_generator = get_paginated(self.client, url, page_size=1000, **params)
 
-        status = concatenate_to_lf(status_generator, statuses_schema)
+        status = concatenate_to_lazyframe(status_generator, statuses_schema)
 
         return status
