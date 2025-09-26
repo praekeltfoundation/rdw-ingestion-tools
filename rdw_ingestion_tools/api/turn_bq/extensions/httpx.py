@@ -1,6 +1,7 @@
 from collections.abc import Iterator
 
 from httpx import Client
+from httpx_retries import RetryTransport
 
 
 def get_paginated(
@@ -16,16 +17,17 @@ def get_paginated(
     params: dict[str, int] = {"page": 1, "size": page_size}
 
     while True:
-        response = client.get(url, params={**params, **kwargs})
-        response.raise_for_status()
+        with Client(transport=RetryTransport()) as client:
+            response = client.get(url, params={**params, **kwargs})
+            response.raise_for_status()
 
-        response_json: dict = response.json()
+            response_json: dict = response.json()
 
-        response_data: list[dict] = response_json["items"]
+            response_data: list[dict] = response_json["items"]
 
-        yield from response_data
+            yield from response_data
 
-        if response_json["page"] < response_json["pages"]:
-            params["page"] += 1
-        else:
-            break
+            if response_json["page"] < response_json["pages"]:
+                params["page"] += 1
+            else:
+                break
