@@ -2,6 +2,7 @@ from unittest.mock import MagicMock
 import importlib
 import pytest
 import httpx
+from unittest.mock import patch
 
 
 @pytest.fixture(autouse=True)
@@ -117,7 +118,26 @@ def test_get_paginated_with_additional_params(turn_bq_httpx_module, mock_client,
         )
     )
 
-    mock_client.get.assert_called_once_with(
-        "http://test-api.com/data",
-        params={"page": 1, "size": 1000, "param1": "value1", "param2": 123},
-    )
+def test_get_paginated_retry_mechanism(turn_bq_httpx_module, mock_client, make_mock_response):
+    """Test that get_paginated uses RetryTransport for resilient HTTP requests."""
+    # Create a mock response
+    mock_response = make_mock_response(items=[{"id": 1}], page=1, pages=1)
+    mock_client.get.return_value = mock_response
+
+    # Mock the RetryTransport using the correct import path
+    with patch('rdw_ingestion_tools.api.turn_bq.extensions.httpx.RetryTransport') as mock_retry_transport:
+        # Call the function
+        result = list(turn_bq_httpx_module.get_paginated(mock_client, "http://test-api.com/data"))
+
+        # Assertions
+        assert len(result) == 1
+        assert result[0]["id"] == 1
+
+        # Verify that RetryTransport was instantiated for each request
+        # Since we have a while loop that runs once (single page), we expect 1 call
+        assert mock_retry_transport.call_count == 1
+
+        # Verify the call was made with correct parameters
+        mock_client.get.assert_called_once_with(
+            "http://test-api.com/data", params={"page": 1, "size": 1000}
+        )

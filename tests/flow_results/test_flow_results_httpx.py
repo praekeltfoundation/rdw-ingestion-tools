@@ -2,6 +2,7 @@ from unittest.mock import MagicMock
 import importlib
 import pytest
 import httpx
+from unittest.mock import patch
 
 @pytest.fixture(autouse=True)
 def _set_required_env(monkeypatch):
@@ -137,4 +138,34 @@ def test_get_paginated_kwargs_propagation(flow_results_httpx_module, mock_client
     mock_client.get.assert_called_once_with(
         "/packages/xyz", params={"limit": 50, "cursor": "abc"}
     )
+
+def test_get_paginated_retry_mechanism(flow_results_httpx_module, mock_client, make_response):
+    """Test that get_paginated uses RetryTransport for resilient HTTP requests."""
+    # Create a mock response
+    json_payload = {
+        "data": {
+            "attributes": {"responses": [[{"a": 1}], [{"b": 2}]]},
+            "relationships": {"links": {"next": None}},
+        }
+    }
+    mock_response = make_response(json_payload)
+    mock_client.get.return_value = mock_response
+
+    # Mock the RetryTransport using the correct import path
+    with patch('rdw_ingestion_tools.api.flow_results.extensions.httpx.RetryTransport') as mock_retry_transport:
+        # Call the function
+        result = list(flow_results_httpx_module.get_paginated(mock_client, "http://test-api.com/data"))
+
+        # Assertions
+        assert len(result) == 2
+        assert result == [[{"a": 1}], [{"b": 2}]]
+
+        # Verify that RetryTransport was instantiated for each request
+        # Since we have a while loop that runs once (single page), we expect 1 call
+        assert mock_retry_transport.call_count == 1
+
+        # Verify the call was made with correct parameters
+        mock_client.get.assert_called_once_with(
+            "http://test-api.com/data", params={}
+        )
 
