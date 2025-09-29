@@ -1,8 +1,8 @@
-from unittest.mock import MagicMock
 import importlib
-import pytest
+from unittest.mock import MagicMock, patch
+
 import httpx
-from unittest.mock import patch
+import pytest
 
 
 @pytest.fixture(autouse=True)
@@ -57,7 +57,9 @@ def test_get_paginated(turn_bq_httpx_module, mock_client, make_mock_response):
     mock_response = make_mock_response(items=[{"id": 1}, {"id": 2}], page=1, pages=1)
     mock_client.get.return_value = mock_response
 
-    result = list(turn_bq_httpx_module.get_paginated(mock_client, "http://test-api.com/data"))
+    result = list(
+        turn_bq_httpx_module.get_paginated(mock_client, "http://test-api.com/data")
+    )
 
     assert len(result) == 2
     assert result[0]["id"] == 1
@@ -67,20 +69,28 @@ def test_get_paginated(turn_bq_httpx_module, mock_client, make_mock_response):
     )
 
 
-def test_get_paginated_error_handling(turn_bq_httpx_module, mock_client, make_mock_response):
+def test_get_paginated_error_handling(
+    turn_bq_httpx_module, mock_client, make_mock_response
+):
     """Test that get_paginated raises an exception when the API returns an error."""
     req = httpx.Request("GET", "http://test-api.com/data")
     resp = httpx.Response(500, request=req)
     status_err = httpx.HTTPStatusError("Error", request=req, response=resp)
 
-    mock_response = make_mock_response(items=[], page=1, pages=1, status_error=status_err)
+    mock_response = make_mock_response(
+        items=[], page=1, pages=1, status_error=status_err
+    )
     mock_client.get.return_value = mock_response
 
     with pytest.raises(httpx.HTTPStatusError):
-        list(turn_bq_httpx_module.get_paginated(mock_client, "http://test-api.com/data"))
+        list(
+            turn_bq_httpx_module.get_paginated(mock_client, "http://test-api.com/data")
+        )
 
 
-def test_get_paginated_pagination(turn_bq_httpx_module, mock_client, make_mock_response):
+def test_get_paginated_pagination(
+    turn_bq_httpx_module, mock_client, make_mock_response
+):
     """Test that get_paginated correctly handles pagination across multiple pages."""
     mock_response_page1 = make_mock_response(
         items=[{"id": 1}, {"id": 2}], page=1, pages=2
@@ -91,7 +101,11 @@ def test_get_paginated_pagination(turn_bq_httpx_module, mock_client, make_mock_r
 
     mock_client.get.side_effect = [mock_response_page1, mock_response_page2]
 
-    result = list(turn_bq_httpx_module.get_paginated(mock_client, "http://test-api.com/data", page_size=2))
+    result = list(
+        turn_bq_httpx_module.get_paginated(
+            mock_client, "http://test-api.com/data", page_size=2
+        )
+    )
 
     assert len(result) == 4
     assert [item["id"] for item in result] == [1, 2, 3, 4]
@@ -104,7 +118,9 @@ def test_get_paginated_pagination(turn_bq_httpx_module, mock_client, make_mock_r
     )
 
 
-def test_get_paginated_with_additional_params(turn_bq_httpx_module, mock_client, make_mock_response):
+def test_get_paginated_with_additional_params(
+    turn_bq_httpx_module, mock_client, make_mock_response
+):
     """Test that get_paginated correctly passes additional parameters to the API."""
     mock_response = make_mock_response(items=[{"id": 1}], page=1, pages=1)
     mock_client.get.return_value = mock_response
@@ -118,16 +134,23 @@ def test_get_paginated_with_additional_params(turn_bq_httpx_module, mock_client,
         )
     )
 
-def test_get_paginated_retry_mechanism(turn_bq_httpx_module, mock_client, make_mock_response):
+
+def test_get_paginated_retry_mechanism(
+    turn_bq_httpx_module, mock_client, make_mock_response
+):
     """Test that get_paginated uses RetryTransport for resilient HTTP requests."""
     # Create a mock response
     mock_response = make_mock_response(items=[{"id": 1}], page=1, pages=1)
     mock_client.get.return_value = mock_response
 
     # Mock the RetryTransport using the correct import path
-    with patch('rdw_ingestion_tools.api.turn_bq.extensions.httpx.RetryTransport') as mock_retry_transport:
+    with patch(
+        "rdw_ingestion_tools.api.turn_bq.extensions.httpx.RetryTransport"
+    ) as mock_retry_transport:
         # Call the function
-        result = list(turn_bq_httpx_module.get_paginated(mock_client, "http://test-api.com/data"))
+        result = list(
+            turn_bq_httpx_module.get_paginated(mock_client, "http://test-api.com/data")
+        )
 
         # Assertions
         assert len(result) == 1
