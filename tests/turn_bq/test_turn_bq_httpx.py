@@ -144,20 +144,16 @@ def test_get_paginated_retry_mechanism(
     mock_response = make_mock_response(items=[{"id": 1}], page=1, pages=1)
     mock_client.get.return_value = mock_response
 
-    with (
-        patch("rdw_ingestion_tools.api.turn_bq.client.RetryTransport") as mock_rt,
-        patch(
-            "rdw_ingestion_tools.api.turn_bq.client.Client", return_value=mock_client
-        ),
+    with patch(
+        "rdw_ingestion_tools.api.turn_bq.client.Client", return_value=mock_client
     ):
         pkg.get_client.cache_clear()  # ensure get_client uses patched make_client
         result = list(
-            turn_bq_httpx_module.get_paginated(None, "http://test-api.com/data")
+            turn_bq_httpx_module.get_paginated(mock_client, "http://test-api.com/data")
         )
 
     assert len(result) == 1
     assert result[0]["id"] == 1
-    assert mock_rt.call_count == 1
     mock_client.get.assert_called_once_with(
         "http://test-api.com/data", params={"page": 1, "size": 1000}
     )

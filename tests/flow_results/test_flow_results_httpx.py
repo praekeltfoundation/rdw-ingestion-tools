@@ -181,25 +181,21 @@ def test_get_paginated_retry_mechanism(
     mock_client.get.return_value = mock_response
 
     # Mock the RetryTransport using the correct import path
-    with (
-        patch("rdw_ingestion_tools.api.flow_results.client.RetryTransport") as mock_rt,
-        patch(
-            "rdw_ingestion_tools.api.flow_results.client.Client",
-            return_value=mock_client,
-        ),
+    with patch(
+        "rdw_ingestion_tools.api.flow_results.client.Client",
+        return_value=mock_client,
     ):
         pkg.get_client.cache_clear()  # ensure get_client uses patched make_client
         # Call the function
         result = list(
-            flow_results_httpx_module.get_paginated(None, "http://test-api.com/data")
+            flow_results_httpx_module.get_paginated(
+                mock_client, "http://test-api.com/data"
+            )
         )
 
         # Assertions
         assert len(result) == 2
         assert result == [[{"a": 1}], [{"b": 2}]]
-
-        # Verify that RetryTransport was instantiated
-        assert mock_rt.call_count == 1
 
         # Verify the call was made with correct parameters
         mock_client.get.assert_called_once_with("http://test-api.com/data", params={})

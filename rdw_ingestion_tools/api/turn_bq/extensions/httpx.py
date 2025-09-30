@@ -2,8 +2,6 @@ from collections.abc import Iterator
 
 from httpx import Client
 
-from rdw_ingestion_tools.api.turn_bq import get_client as default_client_factory
-
 
 def get_paginated(
     client: Client, url: str, page_size: int = 1000, **kwargs: str | int
@@ -13,7 +11,7 @@ def get_paginated(
     This function will paginate over returned pages from the Turn BQ API.
 
     """
-    client = client or default_client_factory()
+    client = client
     url = f"{url}"
 
     params: dict[str, int] = {"page": 1, "size": page_size}

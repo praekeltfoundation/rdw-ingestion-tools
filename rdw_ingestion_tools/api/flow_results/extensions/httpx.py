@@ -2,8 +2,6 @@ from collections.abc import Iterator
 
 from httpx import Client
 
-from rdw_ingestion_tools.api.flow_results import get_client as default_client_factory
-
 
 def get_ids(client: Client, **kwargs: str | int) -> Iterator[str]:
     """Returns a list of flow id's.
@@ -12,7 +10,7 @@ def get_ids(client: Client, **kwargs: str | int) -> Iterator[str]:
     Results API.
 
     """
-    client = client or default_client_factory()
+    client = client
 
     params = {**kwargs}
     url = ""
@@ -31,7 +29,7 @@ def get_paginated(client: Client, url: str, **kwargs: str | int) -> Iterator[lis
     the full result set is returned.
 
     """
-    client = client or default_client_factory()
+    client = client
     while True:
         response = client.get(url, params={**kwargs})
         response.raise_for_status()
