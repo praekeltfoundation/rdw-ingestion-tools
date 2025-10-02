@@ -168,8 +168,6 @@ def test_get_paginated_retry_mechanism(
     flow_results_httpx_module, mock_client, make_response
 ):
     """Test that get_paginated uses RetryTransport for resilient HTTP requests."""
-    pkg = importlib.import_module("rdw_ingestion_tools.api.flow_results.client")
-    pkg.get_client.cache_clear()
     # Create a mock response
     json_payload = {
         "data": {
@@ -185,7 +183,6 @@ def test_get_paginated_retry_mechanism(
         "rdw_ingestion_tools.api.flow_results.client.Client",
         return_value=mock_client,
     ):
-        pkg.get_client.cache_clear()  # ensure get_client uses patched make_client
         # Call the function
         result = list(
             flow_results_httpx_module.get_paginated(
