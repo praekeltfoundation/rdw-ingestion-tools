@@ -11,7 +11,7 @@ from api.turn_bq.requests.flow_results_data_packages import (
 from api.turn_bq.requests.messages import Messages
 from api.turn_bq.requests.statuses import Statuses
 
-from . import client as default_client
+from .client import get_client
 
 
 @define
@@ -22,7 +22,7 @@ class pyTurnBQ:
 
     """
 
-    client: Client = field(factory=lambda: default_client)
+    client: Client = field(factory=get_client)
 
     cards: Cards = field(init=False)
     contacts: Contacts = field(init=False)
