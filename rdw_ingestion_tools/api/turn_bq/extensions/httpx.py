@@ -11,7 +11,6 @@ def get_paginated(
     This function will paginate over returned pages from the Turn BQ API.
 
     """
-    client = client
     url = f"{url}"
 
     params: dict[str, int] = {"page": 1, "size": page_size}
