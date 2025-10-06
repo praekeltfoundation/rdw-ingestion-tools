@@ -122,3 +122,13 @@ pyS3.s3.get_filenames(bucket=bucket, prefix=prefix)
 #### Running tests
 1. `uv sync --dev --extra polars`
 2. `uv run pytest -vv --cov`
+
+## Release
+To release a new version of the package:
+
+1. Update the version number in `pyproject.toml`
+1. Run `uv lock`
+1. Post the changes to Slack for approval
+1. Once approved, push to main
+1. Repeat the above post-release, incrementing and adding `.dev0` to the version number.
+

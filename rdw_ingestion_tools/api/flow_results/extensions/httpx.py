@@ -10,7 +10,6 @@ def get_ids(client: Client, **kwargs: str | int) -> Iterator[str]:
     Results API.
 
     """
-
     params = {**kwargs}
     url = ""
 
@@ -28,7 +27,6 @@ def get_paginated(client: Client, url: str, **kwargs: str | int) -> Iterator[lis
     the full result set is returned.
 
     """
-
     while True:
         response = client.get(url, params={**kwargs})
         response.raise_for_status()

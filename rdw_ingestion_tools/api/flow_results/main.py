@@ -4,7 +4,7 @@ from httpx import Client
 from api.flow_results.requests.flows import Flows
 from api.flow_results.requests.responses import Responses
 
-from . import client as default_client
+from .client import get_client
 
 
 @define
@@ -15,7 +15,7 @@ class pyFlows:
 
     """
 
-    client: Client = field(factory=lambda: default_client)
+    client: Client = field(factory=get_client)
 
     flows: Flows = field(init=False)
     responses: Responses = field(init=False)
