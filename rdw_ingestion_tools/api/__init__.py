@@ -96,7 +96,7 @@ def get_polars_schema(
 def concatenate_to_string_lazyframe(
     objs: list[dict] | dict[Never, Never] | list[Never] | Iterator,
     object_columns: list[str],
-    batch_size: int = 20000,
+    batch_size: int = 2000,
 ) -> LazyFrame:
     """
     Flattens JSON data. Returns a LazyFrame with columns of type `String`.
