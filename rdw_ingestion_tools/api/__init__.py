@@ -1,6 +1,7 @@
 import os
 from collections.abc import Iterator
 
+from more_itertools import chunked
 from pandas import DataFrame
 from pandas import json_normalize as pd_json_normalize
 from polars import (
@@ -71,9 +72,10 @@ def get_polars_schema(
     object_columns: list[str], data: list[dict[str, Object]]
 ) -> dict[str, Object]:
     """
-    Creates a normalised LazyFrame and uses the schema to generate a schema
-    dictionary using the column names.
-    Columns that are `list` types need to be type `Object` before they can be cast
+    Creates a normalised LazyFrame. Returns a schema dictionary using the
+    LazyFrame's column names.
+
+    Note: Columns that are `list` types need to be type `Object` before they can be cast
     to string.
     All other column types can be cast directly to string using the schema generated.
     """
@@ -94,17 +96,22 @@ def get_polars_schema(
 def concatenate_to_string_lazyframe(
     objs: list[dict] | dict[Never, Never] | list[Never] | Iterator,
     object_columns: list[str],
+    batch_size: int = 2000,
 ) -> LazyFrame:
     """
-    Flattens JSON data. Returns a LazyFrame with String columns.
+    Flattens JSON data. Returns a LazyFrame with columns of type `String`.
     """
-    data = list(objs)
+    lf = LazyFrame()
 
-    schema = get_polars_schema(data=data, object_columns=object_columns)
-    lf = (
-        json_normalize(data, separator="_", schema=schema)
-        .lazy()
-        .with_columns(col(Object).map_elements(lambda x: str(x), return_dtype=String))
-    )
+    for data in chunked(objs, batch_size):
+        schema = get_polars_schema(data=data, object_columns=object_columns)
+        response_lf = (
+            json_normalize(data, separator="_", schema=schema)
+            .lazy()
+            .with_columns(
+                col(Object).map_elements(lambda x: str(x), return_dtype=String)
+            )
+        )
+        lf = concat([lf, response_lf], how="diagonal")
 
     return lf
