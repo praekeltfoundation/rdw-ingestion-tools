@@ -1,5 +1,4 @@
 import pytest
-
 from polars import LazyFrame, Object, String
 from polars.testing import assert_frame_equal
 
@@ -7,8 +6,7 @@ from rdw_ingestion_tools.api import concatenate_to_string_lazyframe, get_polars_
 
 
 def test_get_polars_schema_empty_data():
-    """Tests that schemas generated for empty responses are empty dictionaries.
-    """
+    """Tests that schemas generated for empty responses are empty dictionaries."""
     schema = get_polars_schema(object_columns=[], data=[])
 
     assert schema == {}
@@ -78,7 +76,7 @@ def test_get_polars_schema_json_types():
     assert schema == expected_schema
 
 
-@pytest.mark.parametrize("batch_size", [1,2])
+@pytest.mark.parametrize("batch_size", [1, 2])
 def test_concatenate_to_string_lazyframe(batch_size):
     """Tests that response data is concatenated and normalised into LazyFrames
     with column type `String`.
@@ -88,7 +86,9 @@ def test_concatenate_to_string_lazyframe(batch_size):
         {"col1": 2, "col2": [1, 2, 3], "col3": {"key": "value2"}},
     ]
 
-    lf = concatenate_to_string_lazyframe(objs=data, object_columns=["col2"], batch_size=batch_size)
+    lf = concatenate_to_string_lazyframe(
+        objs=data, object_columns=["col2"], batch_size=batch_size
+    )
 
     expected_lf = LazyFrame(
         {
@@ -101,7 +101,7 @@ def test_concatenate_to_string_lazyframe(batch_size):
     assert_frame_equal(lf, expected_lf)
 
 
-@pytest.mark.parametrize("batch_size", [1,2,3])
+@pytest.mark.parametrize("batch_size", [1, 2, 3])
 def test_concatenate_to_string_lazyframe_uses_all_rows(batch_size):
     """Tests that the key names in every JSON column are used."""
     data = [
@@ -113,13 +113,13 @@ def test_concatenate_to_string_lazyframe_uses_all_rows(batch_size):
     expected_lf = LazyFrame(
         {
             "column1_key1": ["1", None, None],
-             "column2_key1": [None, "1", "1"],
-             "column2_key2": [None, None, "2"]
+            "column2_key1": [None, "1", "1"],
+            "column2_key2": [None, None, "2"],
         }
     )
 
-    lf = concatenate_to_string_lazyframe(objs=data, object_columns=[], batch_size=batch_size)
+    lf = concatenate_to_string_lazyframe(
+        objs=data, object_columns=[], batch_size=batch_size
+    )
 
     assert_frame_equal(lf, expected_lf)
-
-
