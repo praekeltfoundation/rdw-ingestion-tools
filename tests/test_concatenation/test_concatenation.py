@@ -1,3 +1,5 @@
+import pytest
+
 from polars import LazyFrame, Object, String
 from polars.testing import assert_frame_equal
 
@@ -5,9 +7,7 @@ from rdw_ingestion_tools.api import concatenate_to_string_lazyframe, get_polars_
 
 
 def test_get_polars_schema_empty_data():
-    """
-    Tests that schemas generated for empty responses are empty dictionaries.
-
+    """Tests that schemas generated for empty responses are empty dictionaries.
     """
     schema = get_polars_schema(object_columns=[], data=[])
 
@@ -15,10 +15,8 @@ def test_get_polars_schema_empty_data():
 
 
 def test_concatenate_to_string_lazyframe_empty_response():
-    """
-    Tests that concatenate_to_string_lazyframe returns an empty LazyFrame for
+    """Tests that concatenate_to_string_lazyframe returns an empty LazyFrame for
     empty response data.
-
     """
     lf = concatenate_to_string_lazyframe(objs=[], object_columns=[])
 
@@ -26,10 +24,8 @@ def test_concatenate_to_string_lazyframe_empty_response():
 
 
 def test_get_polars_schema_primitive_types():
-    """
-    Schemas generated from response data use type `String`
+    """Tests that schemas generated from response data use type `String`
     for all primitive types.
-
     """
     data = [
         {
@@ -57,10 +53,8 @@ def test_get_polars_schema_primitive_types():
 
 
 def test_get_polars_schema_list_types():
-    """
-    Tests that generated schemas from response data use type `Object`
+    """Tests that generated schemas from response data use type `Object`
     for list columns.
-
     """
     data = [{"col1": [1, 2, 3], "col2": [{"key": "value"}], "col3": False}]
 
@@ -72,10 +66,8 @@ def test_get_polars_schema_list_types():
 
 
 def test_get_polars_schema_json_types():
-    """
-    Tests that generated schemas from response data with JSON columns
+    """Tests that generated schemas from response data with JSON columns
     normalise the column names in the schema.
-
     """
     data = [{"col1": {"key": {"inner_key": "value"}}, "col2": {"key": "value"}}]
 
@@ -86,18 +78,17 @@ def test_get_polars_schema_json_types():
     assert schema == expected_schema
 
 
-def test_concatenate_to_string_lazyframe():
-    """
-    Tests that response data is concatenated and normalised into LazyFrames
+@pytest.mark.parametrize("batch_size", [1,2])
+def test_concatenate_to_string_lazyframe(batch_size):
+    """Tests that response data is concatenated and normalised into LazyFrames
     with column type `String`.
-
     """
     data = [
         {"col1": 1, "col2": [1, 2, 3], "col3": {"key": "value1"}},
         {"col1": 2, "col2": [1, 2, 3], "col3": {"key": "value2"}},
     ]
 
-    lf = concatenate_to_string_lazyframe(objs=data, object_columns=["col2"])
+    lf = concatenate_to_string_lazyframe(objs=data, object_columns=["col2"], batch_size=batch_size)
 
     expected_lf = LazyFrame(
         {
@@ -108,3 +99,27 @@ def test_concatenate_to_string_lazyframe():
     )
 
     assert_frame_equal(lf, expected_lf)
+
+
+@pytest.mark.parametrize("batch_size", [1,2,3])
+def test_concatenate_to_string_lazyframe_uses_all_rows(batch_size):
+    """Tests that the key names in every JSON column are used."""
+    data = [
+        {"column1": {"key1": "1"}},
+        {"column2": {"key1": "1"}},
+        {"column2": {"key1": "1", "key2": "2"}},
+    ]
+
+    expected_lf = LazyFrame(
+        {
+            "column1_key1": ["1", None, None],
+             "column2_key1": [None, "1", "1"],
+             "column2_key2": [None, None, "2"]
+        }
+    )
+
+    lf = concatenate_to_string_lazyframe(objs=data, object_columns=[], batch_size=batch_size)
+
+    assert_frame_equal(lf, expected_lf)
+
+

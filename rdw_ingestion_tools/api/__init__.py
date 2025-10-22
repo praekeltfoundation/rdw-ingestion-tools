@@ -72,9 +72,10 @@ def get_polars_schema(
     object_columns: list[str], data: list[dict[str, Object]]
 ) -> dict[str, Object]:
     """
-    Creates a normalised LazyFrame and uses the schema to generate a schema
-    dictionary using the column names.
-    Columns that are `list` types need to be type `Object` before they can be cast
+    Creates a normalised LazyFrame. Returns a schema dictionary using the
+    LazyFrame's column names.
+
+    Note: Columns that are `list` types need to be type `Object` before they can be cast
     to string.
     All other column types can be cast directly to string using the schema generated.
     """
