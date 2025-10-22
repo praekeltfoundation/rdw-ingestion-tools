@@ -1,7 +1,7 @@
 import os
 from collections.abc import Iterator
 
-import more_itertools as it
+from more_itertools import chunked
 from pandas import DataFrame
 from pandas import json_normalize as pd_json_normalize
 from polars import (
@@ -94,19 +94,22 @@ def get_polars_schema(
 
 def concatenate_to_string_lazyframe(
     objs: list[dict] | dict[Never, Never] | list[Never] | Iterator,
-    object_columns: list[str], batch_size: int = 20000
+    object_columns: list[str],
+    batch_size: int = 20000,
 ) -> LazyFrame:
     """
     Flattens JSON data. Returns a LazyFrame with columns of type `String`.
     """
     lf = LazyFrame()
 
-    for data in it.batched(objs, batch_size):
+    for data in chunked(objs, batch_size):
         schema = get_polars_schema(data=data, object_columns=object_columns)
         response_lf = (
             json_normalize(data, separator="_", schema=schema)
             .lazy()
-            .with_columns(col(Object).map_elements(lambda x: str(x), return_dtype=String))
+            .with_columns(
+                col(Object).map_elements(lambda x: str(x), return_dtype=String)
+            )
         )
         lf = concat([lf, response_lf], how="diagonal")
 
