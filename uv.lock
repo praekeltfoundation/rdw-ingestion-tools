@@ -649,7 +649,7 @@ wheels = [
 
 [[package]]
 name = "rdw-ingestion-tools"
-version = "2.0.5"
+version = "2.0.6.dev0"
 source = { editable = "." }
 dependencies = [
     { name = "attrs" },
