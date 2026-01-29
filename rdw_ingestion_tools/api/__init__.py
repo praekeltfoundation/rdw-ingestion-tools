@@ -101,7 +101,7 @@ def concatenate_to_string_lazyframe(
     """
     Flattens JSON data. Returns a LazyFrame with columns of type `String`.
     """
-    lf = LazyFrame()
+    lfs = []
 
     for data in chunked(objs, batch_size):
         schema = get_polars_schema(data=data, object_columns=object_columns)
@@ -112,6 +112,6 @@ def concatenate_to_string_lazyframe(
                 col(Object).map_elements(lambda x: str(x), return_dtype=String)
             )
         )
-        lf = concat([lf, response_lf], how="diagonal")
+        lfs.append(response_lf)
 
-    return lf
+    return concat(lfs, how="diagonal") if lfs else LazyFrame()
