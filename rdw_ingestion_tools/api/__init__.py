@@ -114,8 +114,4 @@ def concatenate_to_string_lazyframe(
         )
         lfs.append(response_lf)
 
-    if lfs:
-        lf = concat(lfs, how="diagonal")
-        return lf
-    else:
-        return LazyFrame()
+    return concat(lfs, how="diagonal") if lfs else LazyFrame()
