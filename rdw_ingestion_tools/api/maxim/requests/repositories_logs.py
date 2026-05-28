@@ -42,4 +42,3 @@ class RepositoriesLogs:
             log_repositories_generator = post(self.client, logs_url, data)
 
         return LazyFrame(log_repositories_generator)
-    
